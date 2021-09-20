@@ -20,9 +20,8 @@ namespace ControlRH.Controllers
             _logger = logger;
         }
 
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         { 
-            await cargo.Get();
             return View();
         }
 

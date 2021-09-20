@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "eq6P/BdvzdpvqilgPXriY8bpLgcgnzwv/UmNHTGMZgb9uYVXVXDCWQPZgzl7DyPg/uEqvoSNM2WIguVWj0EJSA==",
+  "dgSpecHash": "vlfYSm+RflVDvGhMIDk1pho7iF+4STW9bdPvLQxyWqHEm7sJzJsp1mzIiPbFf9rMvD8SW3DA1zcvLmZBMH1+dw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Cliente\\source\\repos\\TCC\\ControlRH\\ControlRH\\ControlRH.csproj",
+  "projectFilePath": "C:\\Users\\Cliente\\source\\repos\\TCC\\Aplicação\\ControlRH\\ControlRH\\ControlRH.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Cliente\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.7\\microsoft.aspnet.webapi.client.5.2.7.nupkg.sha512",
     "C:\\Users\\Cliente\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",

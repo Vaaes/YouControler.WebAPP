@@ -4571,11 +4571,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Cliente\\source\\repos\\TCC\\ControlRH\\ControlRH\\ControlRH.csproj",
+      "projectUniqueName": "C:\\Users\\Cliente\\source\\repos\\TCC\\Aplicação\\ControlRH\\ControlRH\\ControlRH.csproj",
       "projectName": "ControlRH",
-      "projectPath": "C:\\Users\\Cliente\\source\\repos\\TCC\\ControlRH\\ControlRH\\ControlRH.csproj",
+      "projectPath": "C:\\Users\\Cliente\\source\\repos\\TCC\\Aplicação\\ControlRH\\ControlRH\\ControlRH.csproj",
       "packagesPath": "C:\\Users\\Cliente\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Cliente\\source\\repos\\TCC\\ControlRH\\ControlRH\\obj\\",
+      "outputPath": "C:\\Users\\Cliente\\source\\repos\\TCC\\Aplicação\\ControlRH\\ControlRH\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "D:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
