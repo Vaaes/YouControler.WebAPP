@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "mkqijizsxGuZcs5+TRUeZsA0HSk+0HkQPdPMK0p9lb20LROiFUlQlQo1Tf8jQ39CJ18SM/zHOdpDFeBfAreexA==",
+  "dgSpecHash": "YgOabLYKPx2e9akvODGVw97eMe3FZeuUdo0meZ6Hcopy3yEMxiZjLtC1qTAv+HwIAeXd2lEphsrlr2W0atJvuA==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Cliente\\source\\repos\\TCC\\Aplicação\\ControlRH\\ControlRH\\ControlRH.csproj",
+  "projectFilePath": "C:\\Users\\Cliente\\source\\repos\\_YouController\\Aplicação\\ControlRH\\ControlRH\\ControlRH.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Cliente\\.nuget\\packages\\microsoft.aspnet.webapi.client\\5.2.7\\microsoft.aspnet.webapi.client.5.2.7.nupkg.sha512",
     "C:\\Users\\Cliente\\.nuget\\packages\\microsoft.aspnetcore.html.abstractions\\2.2.0\\microsoft.aspnetcore.html.abstractions.2.2.0.nupkg.sha512",

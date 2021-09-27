@@ -1,0 +1,83 @@
+﻿@model ControleAcessoViewModel
+
+    <ul>
+
+        @foreach (var item in Model.Itens)
+        {
+
+            if (item.Menu == "Usuarios")
+            {
+
+                <li class="item">
+                    <a asp-controller="Usuarios" asp-action="Index" class="menu-btn">
+                        <i class="fas fa-users"></i><span>@item.Menu</span>
+                    </a>
+                </li>
+            }
+
+            if (item.Menu == "Departamentos")
+            {
+                <li class="item">
+                    <a asp-controller="Departamentos" asp-action="Index" class="menu-btn">
+                        <i class="fas fa-suitcase"></i><span>@item.Menu</span>
+                    </a>
+                </li>
+            }
+
+            if (item.Menu == "Cargo")
+            {
+                <li class="item">
+                    <a asp-controller="Cargo" asp-action="Index" class="menu-btn">
+                        <i class="fas fa-user-ninja"></i><span>@item.Menu</span>
+                    </a>
+                </li>
+            }
+
+            if (item.Menu == "Colaborador")
+            {
+                <li class="item">
+                    <a asp-controller="Colaborador" asp-action="Index" class="menu-btn">
+                        <i class="fas fa-address-card"></i><span>@item.Menu</span>
+                    </a>
+                </li>
+            }
+
+            if (item.Menu == "Ferias")
+            {
+                <li class="item">
+                    <a asp-controller="Ferias" asp-action="Index" class="menu-btn">
+                        <i class="fas fa-umbrella-beach"></i><span>@item.Menu</span>
+                    </a>
+                </li>
+            }
+
+            if (item.Menu == "Nivel Acesso")
+            {
+                <li class="item">
+                    <a asp-controller="NivelAcesso" asp-action="Index" class="menu-btn">
+                        <i class="fas fa-lock"></i><span>@item.Menu</span>
+                    </a>
+                </li>
+            }
+
+            if (item.Menu == "Perfil")
+            {
+                <li class="item">
+                    <a asp-controller="Perfil" asp-action="Index" class="menu-btn">
+                        <i class="fas fa-desktop"></i><span>@item.Menu</span>
+                    </a>
+                </li>
+            }
+
+        }
+
+        @*<li class="item" id="profile">
+                <a href="#profile" class="menu-btn">
+                    <i class="fas fa-user-circle"></i><span>Profile <i class="fas fa-chevron-down drop-down"></i></span>
+                </a>
+                <div class="sub-menu">
+                    <a href="#"><i class="fas fa-image"></i><span>Picture</span></a>
+                    <a href="#"><i class="fas fa-address-card"></i><span>Info</span></a>
+                </div>
+            </li>*@
+    </ul>

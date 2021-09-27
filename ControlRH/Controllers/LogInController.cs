@@ -16,7 +16,6 @@ namespace ControlRH.Controllers
             _logger = logger;
         }
 
-
         public IActionResult Index()
         {
             return View();
@@ -29,6 +28,7 @@ namespace ControlRH.Controllers
             HttpContext.Session.SetString("SessionName", SessionValue.Nome);
             HttpContext.Session.SetString("SessionToken", SessionValue.token);
             HttpContext.Session.SetInt32("SessionId", SessionValue.Id);
+            HttpContext.Session.SetInt32("SessionIdNivelAcesso", SessionValue.IdNivelAcesso);
 
             return RedirectToAction("Index", "Home");
         }

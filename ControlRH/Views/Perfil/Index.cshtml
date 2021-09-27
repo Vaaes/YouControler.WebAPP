@@ -1,0 +1,286 @@
+﻿@model PerfilViewModel
+@{
+    ViewData["Title"] = "Perfil";
+}
+
+<body>
+    <form class="form-horizontal" asp-controller="Perfil" asp-action="ListRoleBySearch" method="get">
+        <div class="card bg-light">
+            <div class="card-header">
+                <strong>Filtrar</strong>
+            </div>
+            <div class="card-body">
+                <div class="form-row">
+                    <label class="col-sm-1 col-form-label">Perfil</label>
+                    <select class="col-sm-11 form-control" asp-for="Id">
+                        <option>-- SELECIONAR --</option>
+                        @foreach (var item in Model.itensReturnToSelect)
+                        {
+                            <option value="@item.Id">@item.Role</option>
+                        }
+                    </select>
+                </div>
+                <br />
+
+            </div>
+            <div class="card-footer">
+                <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
+                <button type="button" id="btn-insert" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
+            </div>
+        </div>
+    </form>
+
+    <br />
+    <hr />
+    <br />
+
+    @if (Model.itensReturnToTable != null)
+    {
+        <table id="grid" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr> 
+                    <th>Role</th>
+                    <th class="td-th-icon-size"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.itensReturnToTable)
+                {
+                    <tr>
+                        <td>@item.Role</td>
+                        <td class="td-th-icon-size nosort text-center">
+                            <a asp-controller="Perfil" asp-action="" asp-route-id="@item.Id"><i class="fas fa-network-wired td-icon text-success" data-toggle="tooltip" title="Editar Permissões"></i></a>
+                            <a class="btn-edit"><i class="fas fa-edit td-icon text-warning" data-toggle="tooltip" title="Editar um Perfil"></i></a>
+                            <a class="btn-excluir" data-toggle="tooltip" onclick="ExcluirPerfil(@item.Id, @item.Role)" title="Excluir um perfil"><i class="fas fa-trash td-icon text-danger"></i></a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    <div class="modal" id="modal-insert-perfil">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Inserir</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Nome do Perfil: </label>
+                    <input class="form-control" id="input-nome-perfil" />
+                    <hr />
+                    <div id="label-all-menus">
+                        <label>Menus que o Perfil terá acesso:</label>
+                    </div>
+
+                    <div>
+                        <div id="list-all-menus" class="form-check">
+
+                        </div>
+                    </div>
+
+                    <div>
+                        <div id="list-all-permissoes" class="form-check">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btn-salvar-perfil" onclick="IncluirDadosPerfil();">Salvar</button>
+                    <button type="button" class="btn btn-danger" id="btn-salvar-menus" onclick="IncluirDadosMenusPerfil();">Salvar Menus</button>
+                    <button type="button" class="btn btn-danger" id="btn-salvar-permissoes">Salvar Permissões</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#grid').DataTable();
+
+        $("#btn-filtra").hide();
+        $("#btn-insert").hide();
+        $(".btn-edit").hide();
+        $(".btn-excluir").hide();
+        HasPermission();
+
+        ReturnAllMenusToModal();
+        $("#list-all-menus").hide();
+        $("#list-all-permissoes").hide();
+        $("#btn-salvar-menus").hide();
+        $("#btn-salvar-permissoes").hide();
+        $("#btn-salvar-perfil").show();
+
+
+    });
+
+    function HasPermission() {
+        $.ajax({
+            type: 'GET',
+            url: "/Home/HasPermissionAllowed",
+            data: { IdMenu: 7 },
+            success: function (result) {
+                $.each(result, function (i, item) {
+                    if (item.ler == 1) { $("#btn-filtra-perfil").show(); }
+                    if (item.criar == 1) { $("#btn-insert-perfil").show(); }
+                    if (item.alterar == 1) { $(".btn-edit-menus").show(); }
+                    if (item.deletar == 1) { $(".btn-excluir-menus").show(); }
+                })
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+
+    $("#btn-insert").click(function () {
+        $('#modal-insert-perfil').modal('show');
+    });
+
+    function ReturnAllMenusToModal() {
+        $.ajax({
+            type: 'GET',
+            url: "/Perfil/ReturnAllMenusToModal",
+            success: function (result) {
+                var divToAppend = $('#list-all-menus')
+                $.each(result, function (i, item) {
+                    divToAppend.append('<input type="checkbox" class="form-check-input" id="' + item.id + '">')
+                    divToAppend.append('<label class="form-check-label">' + item.menu + '</label>')
+                    divToAppend.append('<br />')
+                })
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function IncluirDadosPerfil() {
+        var model = { Role: $('#input-nome-perfil').val() };
+
+        $.ajax({
+            type: 'POST',
+            url: "/Perfil/CreateNewPerfil",
+            data: model,
+            success: function (result) {
+                var divToAppend = $('#label-all-menus')
+                divToAppend.append('<label class="form-check-label">' + result + '</label>')
+                $("#list-all-menus").show();
+                $("#btn-salvar-perfil").hide();
+                $("#btn-salvar-menus").show();
+            },
+            error: function (error) {
+                divToAppend.append('<label class="form-check-label">' + error + '</label>')
+            }
+        });
+    }
+
+    function IncluirDadosPerfil() {
+        var model = { Role: $('#input-nome-perfil').val() };
+
+        $.ajax({
+            type: 'POST',
+            url: "/Perfil/CreateNewPerfil",
+            data: model,
+            success: function (result) {
+                var divToAppend = $('#label-all-menus')
+                divToAppend.append('<label class="form-check-label">' + result + '</label>')
+                $("#list-all-menus").show();
+                $("#btn-salvar-perfil").hide();
+                $("#btn-salvar-menus").show();
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function IncluirDadosMenusPerfil() {
+
+        function IncluirAposRetornarPerfil(id) {
+
+            function IncludeMenus(idMenu, IdPerfil, Acesso) {
+                var model = {
+                    IdMenus: idMenu,
+                    IdNivelAcesso: IdPerfil,
+                    Acesso: Acesso
+                };
+
+                $.ajax({
+                    type: 'POST',
+                    url: "/Perfil/CreateMenuAcessoToNewPerfil",
+                    data: model,
+                    success: function (result) {
+                        console.log(result);
+                    },
+                    error: function (error) {
+                        console.log(error);
+                    }
+                });
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: "/Perfil/ReturnAllMenusToModal",
+                success: function (result) {
+                    $.each(result, function (i, item) {
+                        var idMenu = $('#' + item.id).val()
+                        IncludeMenus(item.id, id, idMenu)
+                    })
+                },
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+
+        }
+
+        $.ajax({
+            type: 'GET',
+            url: "/Perfil/ReturnAllMenusOnPartialView",
+
+            success: function (result) {
+                IncluirAposRetornarPerfil(result);
+            },
+
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+
+
+    //CRIAR UMA FUNÇÃO DE SALVAR VIA AJAX - ESSA FUNÇÃO IRÁ ATIVAR FUNÇÕES DE DUAS MODELS DIFERENTES,
+    //PORTANTO DEVO CRIAR DUAS CHAMADAS AJAX DENTRO DA MESMA FUNÇÃO./
+    //A PRIMEIRA CHAMADA AJAX VAI CRIAR O PERFIL, A SEGUNDA CHAMADA VAI RETORNAR O ID DO PERFIL RECÉM CRIADO E CRIAR OS NIVEIS DE ACESSO
+    //ENTÃO VOU CRIAR UMA TERCEIRA TELA PARA CRIAR AS PERMISSÕES
+
+
+    function Excluir(id, role) {
+
+        function ExcluirPermissoes() {
+            $.ajax({
+                type: 'DELETE',
+                url: "/Perfil/ReturnAllMenusOnPartialView",
+
+                success: function (result) {
+                    IncluirAposRetornarPerfil(result);
+                },
+
+                error: function (error) {
+                    console.log(error);
+                }
+            });
+        }
+    }
+
+
+
+</script>
+

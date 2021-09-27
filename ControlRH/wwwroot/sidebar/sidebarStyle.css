@@ -1,0 +1,227 @@
+﻿* {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-family: "Roboto", sans-serif;
+}
+
+
+
+body {
+    background: #fff;
+}
+
+.pTopBar {
+    color: white;
+}
+
+.sidebar-btn{
+    padding-left: 30px;
+}
+
+.swrapper .header {
+    z-index: 1;
+    background: #22242A;
+    position: fixed;
+    width: calc(100% - 0%);
+    height: 70px;
+    display: flex;
+    top: 0;
+}
+
+    .swrapper .header .header-menu {
+        width: calc(100% - 0%);
+        height: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 0 20px;
+    }
+
+        .swrapper .header .header-menu .title {
+            color: #fff;
+            font-size: 25px;
+            text-transform: uppercase;
+            font-weight: 900;
+        }
+
+            .swrapper .header .header-menu .title span {
+                color: #4CCEE8;
+            }
+
+        .swrapper .header .header-menu .sidebar-btn {
+            color: #fff;
+            position: absolute;
+            margin-left: 240px;
+            font-size: 22px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.3s;
+            transition-property: color;
+        }
+
+            .swrapper .header .header-menu .sidebar-btn:hover {
+                color: #4CCEE8;
+            }
+
+        .swrapper .header .header-menu ul {
+            display: flex;
+        }
+
+            .swrapper .header .header-menu ul li a {
+                background: #fff;
+                color: #000;
+                display: block;
+                margin: 0 10px;
+                font-size: 18px;
+                width: 34px;
+                height: 34px;
+                line-height: 35px;
+                text-align: center;
+                border-radius: 50%;
+                transition: 0.3s;
+                transition-property: background, color;
+            }
+
+                .swrapper .header .header-menu ul li a:hover {
+                    background: #4CCEE8;
+                    color: #fff;
+                }
+
+.swrapper .sidebar {
+    z-index: 1;
+    background: #2F323A;
+    position: fixed;
+    top: 70px;
+    width: 250px;
+    height: 100%;
+    transition: 0.3s;
+    transition-property: width;
+    overflow-y: auto;
+}
+
+    .swrapper .sidebar .sidebar-menu {
+        overflow: hidden;
+    }
+
+        .swrapper .sidebar .sidebar-menu .profile img {
+            margin: 20px 0;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+        }
+
+        .swrapper .sidebar .sidebar-menu .profile p {
+            color: #bbb;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .swrapper .sidebar .sidebar-menu .item {
+            width: 250px;
+            overflow: hidden;
+        }
+
+            .swrapper .sidebar .sidebar-menu .item .menu-btn {
+                display: block;
+                color: #fff;
+                position: relative;
+                padding: 25px 20px;
+                transition: 0.3s;
+                transition-property: color;
+            }
+
+                .swrapper .sidebar .sidebar-menu .item .menu-btn:hover {
+                    color: #4CCEE8;
+                }
+
+                .swrapper .sidebar .sidebar-menu .item .menu-btn i {
+                    margin-right: 20px;
+                }
+
+                .swrapper .sidebar .sidebar-menu .item .menu-btn .drop-down {
+                    float: right;
+                    font-size: 12px;
+                    margin-top: 3px;
+                }
+
+            .swrapper .sidebar .sidebar-menu .item .sub-menu {
+                background: #3498DB;
+                overflow: hidden;
+                max-height: 0;
+                transition: 0.3s;
+                transition-property: background, max-height;
+            }
+
+                .swrapper .sidebar .sidebar-menu .item .sub-menu a {
+                    display: block;
+                    position: relative;
+                    color: #fff;
+                    white-space: nowrap;
+                    font-size: 15px;
+                    padding: 20px;
+                    transition: 0.3s;
+                    transition-property: background;
+                }
+
+                    .swrapper .sidebar .sidebar-menu .item .sub-menu a:hover {
+                        background: #55B1F0;
+                    }
+
+                    .swrapper .sidebar .sidebar-menu .item .sub-menu a:not(last-child) {
+                        border-bottom: 1px solid #8FC5E9;
+                    }
+
+                .swrapper .sidebar .sidebar-menu .item .sub-menu i {
+                    padding-right: 20px;
+                    font-size: 10px;
+                }
+
+            .swrapper .sidebar .sidebar-menu .item:target .sub-menu {
+                max-height: 500px;
+            }
+
+.swrapper .main-container {
+    width: (100% - 250px);
+    margin-top: 70px;
+    margin-left: 250px;
+    padding: 15px;
+    background: url(background.jpg)no-repeat;
+    background-size: cover;
+    height: 100vh;
+    transition: 0.3s;
+}
+
+.swrapper.collapses .sidebar {
+    width: 70px;
+}
+
+    .swrapper.collapses .sidebar .profile img,
+    .swrapper.collapses .sidebar .profile p,
+    .swrapper.collapses .sidebar a span {
+        display: none;
+    }
+
+    .swrapper.collapses .sidebar .sidebar-menu .item .menu-btn {
+        font-size: 23px;
+    }
+
+    .swrapper.collapses .sidebar .sidebar-menu .item .sub-menu i {
+        font-size: 18px;
+        padding-left: 3px;
+    }
+
+.swrapper.collapses .main-container {
+    width: calc(100% - 70px);
+    margin-left: 70px;
+}
+
+/*.swrapper .main-container .card {
+    background: #fff;
+    padding: 15px;
+    margin-bottom: 10px;
+    font-size: 14px;
+}
+*/

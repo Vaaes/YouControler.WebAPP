@@ -11,10 +11,10 @@ namespace ControlRH.Repository
     {
         RhAPI _api = new RhAPI();
 
-        public async Task<IEnumerable<Usuario>> Get()
+        public async Task<IEnumerable<Usuario>> Get(string token)
         {
             IEnumerable<Usuario> model = new List<Usuario>();
-            HttpClient client = _api.Initial();
+            HttpClient client = _api.Initial(token);
 
             HttpResponseMessage res = await client.GetAsync("/Usuario");
             if (res.IsSuccessStatusCode)
@@ -26,9 +26,9 @@ namespace ControlRH.Repository
             return model;
         }
 
-        public bool Create(Usuario model)
+        public bool Create(Usuario model, string token)
         {
-            HttpClient client = _api.Initial();
+            HttpClient client = _api.Initial(token);
 
             var postTask = client.PostAsJsonAsync<Usuario>("Usuario", model);
             postTask.Wait();
@@ -41,9 +41,9 @@ namespace ControlRH.Repository
             return false;
         }
 
-        public async Task<bool> Delete(int id)
+        public async Task<bool> Delete(int id, string token)
         {
-            HttpClient client = _api.Initial();
+            HttpClient client = _api.Initial(token);
             HttpResponseMessage res = await client.DeleteAsync($"Usuario/{id}");
             if (res.IsSuccessStatusCode)
             {
@@ -52,10 +52,10 @@ namespace ControlRH.Repository
             return false;
         }
 
-        public async Task<IEnumerable<Usuario>> Details(int id)
+        public async Task<IEnumerable<Usuario>> Details(int id, string token)
         {
             IEnumerable<Usuario> model = new List<Usuario>();
-            HttpClient client = _api.Initial();
+            HttpClient client = _api.Initial(token);
 
             HttpResponseMessage res = await client.GetAsync($"/Usuario/{id}");
             if (res.IsSuccessStatusCode)

@@ -1,25 +1,19 @@
-﻿using ControlRH.Helper;
-using ControlRH.Models;
+﻿using ControlRH.Models;
 using ControlRH.Repository;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace ControlRH.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        CargoRepository cargo = new CargoRepository();
-        public HomeController(ILogger<HomeController> logger)
+        BaseController _base = new BaseController();
+        LogInRepository _login = new LogInRepository();
+        public HomeController()
         {
-            _logger = logger;
         }
 
         public IActionResult Index()
@@ -37,6 +31,23 @@ namespace ControlRH.Controllers
             }
         }
 
+        public async Task<IActionResult> ReturnAllMenusOnPartialView()
+        {
+            var model = new ControleAcessoViewModel();
+            if (HttpContext.Session.GetString("SessionName") == null)
+                return RedirectToAction("LogOut");
+
+            model.Itens = await _login.Get(HttpContext.Session.GetString("SessionToken"), HttpContext.Session.GetInt32("SessionIdNivelAcesso"));
+
+            return PartialView("_Menus", model);
+        }
+
+        public async Task<IActionResult> HasPermissionAllowed(int IdMenu)
+        {
+            var access = await _login.HasPermission(HttpContext.Session.GetString("SessionToken"), HttpContext.Session.GetInt32("SessionIdNivelAcesso"), IdMenu);    
+            return Ok(access);
+        }
+
         public IActionResult Privacy()
         {
             return View();
@@ -49,7 +60,6 @@ namespace ControlRH.Controllers
                 if (cookie == ".AspNetCore.Session")
                     Response.Cookies.Delete(cookie);
             }
-
             return RedirectToAction("Index", "LogIn");
         }
 

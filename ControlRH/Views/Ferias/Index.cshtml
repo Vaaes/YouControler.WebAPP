@@ -1,0 +1,60 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div>
+    <div>
+        <form asp-controller="Ferias" asp-action="GetFerias"  method="get">
+            <div class="card">
+                <div class="card-header">
+                    Filtros
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label for="floatingInputGrid">Colaborador</label>
+                            <select class="form-control" id="">
+                                <option value="">Selecione...</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md">
+                            <label for="floatingInputGrid">Email</label>
+                            <input type="email" class="form-control" id="floatingInputGrid" placeholder="name@example.com">
+                        </div>
+
+                        <div class="col-md">
+                            <label for="floatingInputGrid">Aprovado</label>
+                            <input type="checkbox" class="form" id="floatingInputGrid" placeholder="name@example.com">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn btn-success float-right btn-sm col-xs-2">Inserir</a>
+                    <a href="#" class="btn btn-dark float-right btn-sm col-xs-2 btn-spacing">Limpar</a>
+                    <a href="#" class="btn btn-primary float-right btn-sm col-xs-2 btn-spacing">Pesquisar</a>
+                </div>
+            </div>
+        </form>
+
+        <table class="table table-responsive table-hover">
+            <thead>
+                <tr>
+                    <th>Colaborador</th>
+                    <th>Férias Inicio</th>
+                    <th>Férias Final</th>
+                    <th>Cargo</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Teste</td>
+                    <td>Teste</td>
+                    <td>Teste</td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
