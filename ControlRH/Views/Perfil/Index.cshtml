@@ -21,7 +21,6 @@
                     </select>
                 </div>
                 <br />
-
             </div>
             <div class="card-footer">
                 <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
@@ -29,35 +28,31 @@
             </div>
         </div>
     </form>
-
     <br />
     <hr />
     <br />
 
-    @if (Model.itensReturnToTable != null)
-    {
-        <table id="grid" class="table table-striped table-bordered" style="width:100%">
-            <thead>
-                <tr> 
-                    <th>Role</th>
-                    <th class="td-th-icon-size"></th>
+    <table id="grid" class="table table-striped table-bordered" style="width:100%">
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th class="td-th-icon-size"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.itensReturnToTable)
+            {
+                <tr>
+                    <td>@item.Role</td>
+                    <td class="td-th-icon-size nosort text-center">
+                        <a asp-controller="Perfil" asp-action="" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Editar Permissões"><i class="fas fa-network-wired td-icon text-success"></i></a>
+                        <a class="btn-edit"><i class="fas fa-edit td-icon text-warning" data-toggle="tooltip" data-placement="top" title="Editar um Perfil"></i></a>
+                        <a class="btn-excluir" onclick="Excluir(@item.Id, '@item.Role')" data-toggle="tooltip" data-placement="top" title="Excluir um perfil"><i class="fas fa-trash td-icon text-danger"></i></a>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                @foreach (var item in Model.itensReturnToTable)
-                {
-                    <tr>
-                        <td>@item.Role</td>
-                        <td class="td-th-icon-size nosort text-center">
-                            <a asp-controller="Perfil" asp-action="" asp-route-id="@item.Id"><i class="fas fa-network-wired td-icon text-success" data-toggle="tooltip" title="Editar Permissões"></i></a>
-                            <a class="btn-edit"><i class="fas fa-edit td-icon text-warning" data-toggle="tooltip" title="Editar um Perfil"></i></a>
-                            <a class="btn-excluir" data-toggle="tooltip" onclick="ExcluirPerfil(@item.Id, @item.Role)" title="Excluir um perfil"><i class="fas fa-trash td-icon text-danger"></i></a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
+            }
+        </tbody>
+    </table>
 
     <div class="modal" id="modal-insert-perfil">
         <div class="modal-dialog">
@@ -68,34 +63,49 @@
                 </div>
                 <div class="modal-body">
                     <label class="form-label">Nome do Perfil: </label>
-                    <input class="form-control" id="input-nome-perfil" />
+                    <input class="form-control" autocomplete="off" id="input-nome-perfil-insert" />
                     <hr />
                     <div id="label-all-menus">
-                        <label>Menus que o Perfil terá acesso:</label>
                     </div>
-
                     <div>
                         <div id="list-all-menus" class="form-check">
-
                         </div>
                     </div>
-
                     <div>
-                        <div id="list-all-permissoes" class="form-check">
-
+                        <div id="label-all-permissoes">
+                            <div id="list-all-permissoes" class="form-check">
+                            </div>
                         </div>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-danger" id="btn-salvar-perfil" onclick="IncluirDadosPerfil();">Salvar</button>
-                    <button type="button" class="btn btn-danger" id="btn-salvar-menus" onclick="IncluirDadosMenusPerfil();">Salvar Menus</button>
-                    <button type="button" class="btn btn-danger" id="btn-salvar-permissoes">Salvar Permissões</button>
+                    <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="IncluirDadosPerfil();">Salvar</button>
+                    <button type="button" class="btn btn-warning" id="btn-salvar-menus" onclick="IncluirDadosMenusPerfil();">Salvar Menus</button>
                 </div>
             </div>
         </div>
     </div>
 
+    <div class="modal" id="modal-update-perfil">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Alterar</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input hidden id="update-id" />
+                    <label class="form-label">Nome do Perfil: </label>
+                    <input class="form-control" id="input-nome-perfil-alterar" />
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="IncluirDadosPerfil();">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 
 <script type="text/javascript">
@@ -109,13 +119,14 @@
         HasPermission();
 
         ReturnAllMenusToModal();
+        $('#input-nome-perfil-insert').prop('disabled', false);
         $("#list-all-menus").hide();
+        $("#label-all-menus").hide();
         $("#list-all-permissoes").hide();
         $("#btn-salvar-menus").hide();
         $("#btn-salvar-permissoes").hide();
         $("#btn-salvar-perfil").show();
-
-
+        $('#btn-salvar-menus').prop('disabled', true);
     });
 
     function HasPermission() {
@@ -125,10 +136,10 @@
             data: { IdMenu: 7 },
             success: function (result) {
                 $.each(result, function (i, item) {
-                    if (item.ler == 1) { $("#btn-filtra-perfil").show(); }
-                    if (item.criar == 1) { $("#btn-insert-perfil").show(); }
-                    if (item.alterar == 1) { $(".btn-edit-menus").show(); }
-                    if (item.deletar == 1) { $(".btn-excluir-menus").show(); }
+                    if (item.ler == 1) { $("#btn-filtra").show(); }
+                    if (item.criar == 1) { $("#btn-insert").show(); }
+                    if (item.alterar == 1) { $(".btn-edit").show(); }
+                    if (item.deletar == 1) { $(".btn-excluir").show(); }
                 })
             },
             error: function (error) {
@@ -142,6 +153,17 @@
         $('#modal-insert-perfil').modal('show');
     });
 
+    function IsChecked() { 
+        var verifyIsChecked = $('.appended').is(":checked")
+        if (verifyIsChecked) {
+            $('#btn-salvar-menus').prop('disabled', false);
+            return;
+        }
+        if (!verifyIsChecked) {
+            $('#btn-salvar-menus').prop('disabled', true);
+        }
+    }
+
     function ReturnAllMenusToModal() {
         $.ajax({
             type: 'GET',
@@ -149,8 +171,8 @@
             success: function (result) {
                 var divToAppend = $('#list-all-menus')
                 $.each(result, function (i, item) {
-                    divToAppend.append('<input type="checkbox" class="form-check-input" id="' + item.id + '">')
-                    divToAppend.append('<label class="form-check-label">' + item.menu + '</label>')
+                    divToAppend.append('<input type="checkbox" class="form-check-input appended" onclick="IsChecked();" id="' + item.id + '">')
+                    divToAppend.append('<label class="form-check-label ">' + item.menu + '</label>')
                     divToAppend.append('<br />')
                 })
             },
@@ -161,7 +183,7 @@
     }
 
     function IncluirDadosPerfil() {
-        var model = { Role: $('#input-nome-perfil').val() };
+        var model = { Role: $('#input-nome-perfil-insert').val() };
 
         $.ajax({
             type: 'POST',
@@ -169,30 +191,16 @@
             data: model,
             success: function (result) {
                 var divToAppend = $('#label-all-menus')
-                divToAppend.append('<label class="form-check-label">' + result + '</label>')
-                $("#list-all-menus").show();
-                $("#btn-salvar-perfil").hide();
-                $("#btn-salvar-menus").show();
-            },
-            error: function (error) {
-                divToAppend.append('<label class="form-check-label">' + error + '</label>')
-            }
-        });
-    }
+                divToAppend.append('<h5 class="form-check-label appended">' + result + '</h5>')
 
-    function IncluirDadosPerfil() {
-        var model = { Role: $('#input-nome-perfil').val() };
-
-        $.ajax({
-            type: 'POST',
-            url: "/Perfil/CreateNewPerfil",
-            data: model,
-            success: function (result) {
-                var divToAppend = $('#label-all-menus')
-                divToAppend.append('<label class="form-check-label">' + result + '</label>')
-                $("#list-all-menus").show();
+                $("#label-all-menus").show(1000);
+                $("#list-all-menus").show(1000);
                 $("#btn-salvar-perfil").hide();
-                $("#btn-salvar-menus").show();
+                $("#btn-salvar-menus").fadeIn("slow");
+
+                $('#btn-inserir-cancelar').text("Inserir Depois");
+                $('#input-nome-perfil-insert').prop('disabled', true);
+
             },
             error: function (error) {
                 console.log(error);
@@ -204,7 +212,7 @@
 
         function IncluirAposRetornarPerfil(id) {
 
-            function IncludeMenus(idMenu, IdPerfil, Acesso) {
+            function IncluirDadosMenu(idMenu, IdPerfil, Acesso) {
                 var model = {
                     IdMenus: idMenu,
                     IdNivelAcesso: IdPerfil,
@@ -216,10 +224,12 @@
                     url: "/Perfil/CreateMenuAcessoToNewPerfil",
                     data: model,
                     success: function (result) {
-                        console.log(result);
+                        if (result) {
+                            return result;
+                        }
                     },
                     error: function (error) {
-                        console.log(error);
+                        Swal.fire('Não foi possível cadastrar os menus, contate o suporte.', '', 'error')
                     }
                 });
             }
@@ -229,22 +239,35 @@
                 url: "/Perfil/ReturnAllMenusToModal",
                 success: function (result) {
                     $.each(result, function (i, item) {
-                        var idMenu = $('#' + item.id).val()
-                        IncludeMenus(item.id, id, idMenu)
+                        var idMenu = $('#' + item.id).is(":checked")
+                        if (idMenu) {
+                            IncluirDadosMenu(item.id, id, 1)
+                        }
+                    })
+                    Swal.fire({
+                        title: 'Perfil cadastrado com sucesso!',
+                        showDenyButton: false,
+                        showCancelButton: false,
+                        confirmButtonText: 'Ok',
+                        icon: 'success'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            location.href = "/Perfil/Index";
+                        }
                     })
                 },
                 error: function (error) {
-                    console.log(error);
+                    Swal.fire('Não foi possível cadastrar o perfil, contate o suporte.', '', 'error')
                 }
             });
-
         }
 
         $.ajax({
             type: 'GET',
-            url: "/Perfil/ReturnAllMenusOnPartialView",
-
+            url: "/Perfil/ListRoleByName",
+            data: { Role: $('#input-nome-perfil-insert').val() },
             success: function (result) {
+                console.log("ID DO USUARIO:  ", result)
                 IncluirAposRetornarPerfil(result);
             },
 
@@ -256,28 +279,44 @@
 
 
 
-    //CRIAR UMA FUNÇÃO DE SALVAR VIA AJAX - ESSA FUNÇÃO IRÁ ATIVAR FUNÇÕES DE DUAS MODELS DIFERENTES,
-    //PORTANTO DEVO CRIAR DUAS CHAMADAS AJAX DENTRO DA MESMA FUNÇÃO./
-    //A PRIMEIRA CHAMADA AJAX VAI CRIAR O PERFIL, A SEGUNDA CHAMADA VAI RETORNAR O ID DO PERFIL RECÉM CRIADO E CRIAR OS NIVEIS DE ACESSO
-    //ENTÃO VOU CRIAR UMA TERCEIRA TELA PARA CRIAR AS PERMISSÕES
-
-
     function Excluir(id, role) {
-
-        function ExcluirPermissoes() {
-            $.ajax({
-                type: 'DELETE',
-                url: "/Perfil/ReturnAllMenusOnPartialView",
-
-                success: function (result) {
-                    IncluirAposRetornarPerfil(result);
-                },
-
-                error: function (error) {
-                    console.log(error);
-                }
-            });
-        }
+        Swal.fire({
+            title: role,
+            text: "Tem certeza que deseja deletar o perfil " + role + "?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'Sim, deletar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'DELETE',
+                    url: "/Perfil/DeletePerfil",
+                    data: { Id: id },
+                    success: function (result) {
+                        Swal.fire({
+                            title: 'Perfil deletado com sucesso!',
+                            showDenyButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'Ok',
+                            icon: 'success'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.href = "/Perfil/Index";
+                            }
+                        })
+                    },
+                    error: function (error) {
+                        Swal.fire(
+                            'Erro!',
+                            'Não foi possível deletar esse perfil, entre em contato com o suporte.',
+                            'error'
+                        )
+                    }
+                });
+            }
+        })
     }
 
 

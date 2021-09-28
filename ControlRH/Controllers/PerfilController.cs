@@ -13,6 +13,7 @@ namespace ControlRH.Controllers
         LogInRepository _login = new LogInRepository();
         PerfilRepository _perfilRepository = new PerfilRepository();
         NivelAcessoRespository _nivelAcessoRepository = new NivelAcessoRespository();
+        PermissoesRepository _permissoesRepository = new PermissoesRepository();
         public async Task<IActionResult> Index()
         {
             try
@@ -22,6 +23,7 @@ namespace ControlRH.Controllers
                     return RedirectToAction("LogOut");
 
                 model.itensReturnToSelect = await _perfilRepository.Get(HttpContext.Session.GetString("SessionToken"));
+                model.itensReturnToTable = await _perfilRepository.Get(HttpContext.Session.GetString("SessionToken"));
 
                 return View(model);
             }
@@ -86,7 +88,7 @@ namespace ControlRH.Controllers
                 var response = _perfilRepository.Create(model, HttpContext.Session.GetString("SessionToken"));
                 if (!response)
                     return Ok("Erro ao tentar inserir Perfil");
-                return Ok("Perfil inserido com sucesso! Agora, escolha quais menus esse perfil terá acesso:");
+                return Ok("Agora escolha quais menus esse perfil terá acesso:");
             }
             catch (Exception ex)
             {
@@ -99,10 +101,20 @@ namespace ControlRH.Controllers
         {
             try
             {
+                var modelPermissions = new Permissoes{
+                    IdMenu = model.IdMenus,
+                    IdPerfilAcesso = model.IdNivelAcesso,
+                    LER = 1,
+                    ALTERAR = 1,
+                    CRIAR = 1,
+                    DELETAR = 1
+                };
+
                 var response = _nivelAcessoRepository.Create(model, HttpContext.Session.GetString("SessionToken"));
+                var responsePermissions = _permissoesRepository.Create(modelPermissions, HttpContext.Session.GetString("SessionToken"));;
                 if (!response)
                     return Ok("Erro ao tentar inserir Menus para o Perfil");
-                return Ok("Controle de Acesso aos Menus inserido com sucesso! Agora, escolha quais Permissões esse perfil terá acesso:");
+                return Ok("Controle de Acesso aos Menus inserido com sucesso!");
             }
             catch (Exception ex)
             {
@@ -110,13 +122,32 @@ namespace ControlRH.Controllers
             }
         }
 
-        public IActionResult DeletePerfil(NivelAcesso model)
+        public IActionResult UpdatePerfil(Perfil perfil)
         {
             try
             {
-                
+                var response = _perfilRepository.Update(perfil, HttpContext.Session.GetString("SessionToken"));
+                if (!response)
+                    return Ok("Erro ao tentar alterar o perfil");
+                return Ok("Perfil alterar com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpDelete]
+        public async Task<IActionResult> DeletePerfil(int Id)
+        {
+            try
+            {
+                var token = HttpContext.Session.GetString("SessionToken");
 
-
+                var responsePermissoes = await _permissoesRepository.Delete(Id, token);
+                var responseNivelAcesso = await _nivelAcessoRepository.Delete(Id, token);
+                var response = await _perfilRepository.Delete(Id, token);
+                if (!response)
+                    return Ok("Erro ao tentar deletar o perfil");
                 return Ok("Perfil deletado com sucesso!");
             }
             catch (Exception ex)
@@ -124,6 +155,5 @@ namespace ControlRH.Controllers
                 throw ex;
             }
         }
-
     }
 }

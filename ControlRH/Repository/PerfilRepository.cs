@@ -16,7 +16,7 @@ namespace ControlRH.Repository
             IEnumerable<Perfil> model = new List<Perfil>();
             HttpClient client = _api.Initial(token);
 
-            HttpResponseMessage res = await client.GetAsync("/Perfil");
+            HttpResponseMessage res = await client.GetAsync("/Perfil/Get");
             if (res.IsSuccessStatusCode)
             {
                 var results = res.Content.ReadAsStringAsync().Result;
@@ -30,7 +30,7 @@ namespace ControlRH.Repository
             IEnumerable<Perfil> model = new List<Perfil>();
             HttpClient client = _api.Initial(token);
 
-            HttpResponseMessage res = await client.GetAsync("/Perfil/" + id);
+            HttpResponseMessage res = await client.GetAsync($"/Perfil/Get?id={id}");
             if (res.IsSuccessStatusCode)
             {
                 var results = res.Content.ReadAsStringAsync().Result;
@@ -44,7 +44,7 @@ namespace ControlRH.Repository
             IEnumerable<Perfil> model = new List<Perfil>();
             HttpClient client = _api.Initial(token);
 
-            HttpResponseMessage res = await client.GetAsync("/Perfil/" + Role);
+            HttpResponseMessage res = await client.GetAsync($"/Perfil/Get?role={Role}");
             if (res.IsSuccessStatusCode)
             {
                 var results = res.Content.ReadAsStringAsync().Result;
