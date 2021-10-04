@@ -22,7 +22,6 @@ namespace ControlRH.Repository
                 var results = res.Content.ReadAsStringAsync().Result;
                 cargos = JsonConvert.DeserializeObject<IEnumerable<Cargo>>(results);
             }
-
             return cargos;
         }
 
@@ -40,6 +39,21 @@ namespace ControlRH.Repository
             }
             return false;
         }
+
+        public async Task<IEnumerable<Cargo>> GetCargoByParam(string token, string Nome_Cargo = null)
+        {
+            IEnumerable<Cargo> cargo = new List<Cargo>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync($"/Cargo/GetCargoByName?Nome={Nome_Cargo}");
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                cargo = JsonConvert.DeserializeObject<IEnumerable<Cargo>>(results);
+            }
+            return cargo;
+        }
+
         public async Task<bool> Delete(int id, string token)
         {
             HttpClient client = _api.Initial(token);
@@ -62,8 +76,22 @@ namespace ControlRH.Repository
                 var results = res.Content.ReadAsStringAsync().Result;
                 cargos = JsonConvert.DeserializeObject<IEnumerable<Cargo>>(results);
             }
-
             return cargos;
+        }
+
+        public bool Update(Cargo model, string token)
+        {
+            HttpClient client = _api.Initial(token);
+
+            var putTask = client.PutAsJsonAsync<Cargo>("Cargo", model);
+            putTask.Wait();
+
+            var result = putTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

@@ -45,8 +45,8 @@
                 <tr>
                     <td>@item.Role</td>
                     <td class="td-th-icon-size nosort text-center">
-                        <a asp-controller="Perfil" asp-action="" asp-route-id="@item.Id" data-toggle="tooltip" data-placement="top" title="Editar Permissões"><i class="fas fa-network-wired td-icon text-success"></i></a>
-                        <a class="btn-edit"><i class="fas fa-edit td-icon text-warning" data-toggle="tooltip" data-placement="top" title="Editar um Perfil"></i></a>
+                        <a onclick="OpenModalMenusAndPermissions(@item.Id, '@item.Role')" data-toggle="tooltip" data-placement="top" title="Editar Permissões"><i class="fas fa-network-wired td-icon text-success"></i></a>
+                        <a class="btn-edit" onclick="OpenEditPerfilModal(@item.Id, '@item.Role')"><i class="fas fa-edit td-icon text-warning" data-toggle="tooltip" data-placement="top" title="Editar um Perfil"></i></a>
                         <a class="btn-excluir" onclick="Excluir(@item.Id, '@item.Role')" data-toggle="tooltip" data-placement="top" title="Excluir um perfil"><i class="fas fa-trash td-icon text-danger"></i></a>
                     </td>
                 </tr>
@@ -54,8 +54,8 @@
         </tbody>
     </table>
 
-    <div class="modal" id="modal-insert-perfil">
-        <div class="modal-dialog">
+    <div class="modal fade" id="modal-insert-perfil">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Inserir</h4>
@@ -67,16 +67,21 @@
                     <hr />
                     <div id="label-all-menus">
                     </div>
-                    <div>
-                        <div id="list-all-menus" class="form-check">
-                        </div>
-                    </div>
-                    <div>
-                        <div id="label-all-permissoes">
-                            <div id="list-all-permissoes" class="form-check">
-                            </div>
-                        </div>
-                    </div>
+
+                    <table id="list-all-menus" class="table table-hover table-responsive-lg">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">#</th>
+                                <th scope="col">Menu</th>
+                                <th scope="col" class="text-center">Leitura</th>
+                                <th scope="col" class="text-center">Inclusão</th>
+                                <th scope="col" class="text-center">Alteração</th>
+                                <th scope="col" class="text-center">Exclusão</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-return-menus">
+                        </tbody>
+                    </table>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
@@ -87,25 +92,63 @@
         </div>
     </div>
 
-    <div class="modal" id="modal-update-perfil">
-        <div class="modal-dialog">
+    <div class="modal fade" id="modal-update-perfil">
+        <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Alterar</h4>
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
-                    <input hidden id="update-id" />
-                    <label class="form-label">Nome do Perfil: </label>
-                    <input class="form-control" id="input-nome-perfil-alterar" />
+                    <input hidden id="input-hidden-id-alterar" />
+                    <input class="form-control" id="input-role-alterar" />
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                    <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="IncluirDadosPerfil();">Salvar</button>
+                    <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateDadosPerfil();">Salvar</button>
                 </div>
             </div>
         </div>
     </div>
+
+    <div class="modal" id="modal-update-menus-permissoes">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Inserir</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <label class="form-label">Nome do Perfil: </label>
+                    <input class="form-control" autocomplete="off" id="input-role-permissao-menus-update" />
+                    <input hidden id="input-id-permissao-menus-update" />
+                    <hr />
+                    <div id="label-all-menus-update">
+                    </div>
+
+                    <table id="list-all-menus-update" class="table table-hover table-responsive-lg">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="text-center">#</th>
+                                <th scope="col">Menu</th>
+                                <th scope="col" class="text-center">Leitura</th>
+                                <th scope="col" class="text-center">Inclusão</th>
+                                <th scope="col" class="text-center">Alteração</th>
+                                <th scope="col" class="text-center">Exclusão</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tbody-return-menus-update">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="AlterarDadosRetornarPerfil();">Salvar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </body>
 
 <script type="text/javascript">
@@ -116,9 +159,10 @@
         $("#btn-insert").hide();
         $(".btn-edit").hide();
         $(".btn-excluir").hide();
-        HasPermission();
+        HasPermission(7);
 
         ReturnAllMenusToModal();
+        AppendMenusUpdate();
         $('#input-nome-perfil-insert').prop('disabled', false);
         $("#list-all-menus").hide();
         $("#label-all-menus").hide();
@@ -129,31 +173,13 @@
         $('#btn-salvar-menus').prop('disabled', true);
     });
 
-    function HasPermission() {
-        $.ajax({
-            type: 'GET',
-            url: "/Home/HasPermissionAllowed",
-            data: { IdMenu: 7 },
-            success: function (result) {
-                $.each(result, function (i, item) {
-                    if (item.ler == 1) { $("#btn-filtra").show(); }
-                    if (item.criar == 1) { $("#btn-insert").show(); }
-                    if (item.alterar == 1) { $(".btn-edit").show(); }
-                    if (item.deletar == 1) { $(".btn-excluir").show(); }
-                })
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
-    }
 
 
     $("#btn-insert").click(function () {
         $('#modal-insert-perfil').modal('show');
     });
 
-    function IsChecked() { 
+    function IsChecked() {
         var verifyIsChecked = $('.appended').is(":checked")
         if (verifyIsChecked) {
             $('#btn-salvar-menus').prop('disabled', false);
@@ -164,65 +190,65 @@
         }
     }
 
+
     function ReturnAllMenusToModal() {
-        $.ajax({
-            type: 'GET',
-            url: "/Perfil/ReturnAllMenusToModal",
-            success: function (result) {
-                var divToAppend = $('#list-all-menus')
-                $.each(result, function (i, item) {
-                    divToAppend.append('<input type="checkbox" class="form-check-input appended" onclick="IsChecked();" id="' + item.id + '">')
-                    divToAppend.append('<label class="form-check-label ">' + item.menu + '</label>')
-                    divToAppend.append('<br />')
-                })
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
+
+        AjaxHelper('GET', '/Perfil/ReturnAllMenusToModal', null, function (result) {
+            var tbodyToAppend = $('#tbody-return-menus')
+            $.each(result, function (i, item) {
+                var rowContentId = "'table-row-" + item.id + "'"
+                var RowContent = '<tr id="table-row-' + item.id + '"><td class="text-center"><input class="appended" type="checkbox" id="' + item.id + '" onclick="CreatePermissionsTds(' + rowContentId + ', (this)); IsChecked();" ></td><td>' + item.menu + '</td></tr>';
+                tbodyToAppend.append(RowContent).hide().show(1000);
+            })
+        })
+    }
+
+    function CreatePermissionsTds(menu, checkbox) {
+        var newRowContent = '<td class="text-center permissionsAppend-' + checkbox.id + '"><input type="checkbox" id="td-' + checkbox.id + '-R"></td><td class="text-center permissionsAppend-' + checkbox.id + '" ><input type="checkbox" class="permissionsAppend-' + checkbox.id + '" id="td-' + checkbox.id + '-C"></td><td class="text-center permissionsAppend-' + checkbox.id + '"><input type="checkbox" class="permissionsAppend-' + checkbox.id + '" id="td-' + checkbox.id + '-U"></td><td class="text-center permissionsAppend-' + checkbox.id + '"><input type="checkbox" class="permissionsAppend-' + checkbox.id + '" id="td-' + checkbox.id + '-D"></td>';
+        if ($("#" + checkbox.id).is(":checked")) {
+
+            $("#" + menu).append(newRowContent);
+        }
+        else {
+            $(".permissionsAppend-" + checkbox.id).remove();
+        }
     }
 
     function IncluirDadosPerfil() {
         var model = { Role: $('#input-nome-perfil-insert').val() };
-
-        $.ajax({
-            type: 'POST',
-            url: "/Perfil/CreateNewPerfil",
-            data: model,
-            success: function (result) {
-                var divToAppend = $('#label-all-menus')
-                divToAppend.append('<h5 class="form-check-label appended">' + result + '</h5>')
-
-                $("#label-all-menus").show(1000);
-                $("#list-all-menus").show(1000);
-                $("#btn-salvar-perfil").hide();
-                $("#btn-salvar-menus").fadeIn("slow");
-
-                $('#btn-inserir-cancelar').text("Inserir Depois");
-                $('#input-nome-perfil-insert').prop('disabled', true);
-
-            },
-            error: function (error) {
-                console.log(error);
-            }
-        });
+        AjaxHelper('POST', '/Perfil/CreateNewPerfil', model, function (result) {
+            var divToAppend = $('#label-all-menus')
+            divToAppend.append('<h5 class="form-check-label appended">' + result + '</h5>')
+            $("#label-all-menus").show(1000);
+            $("#list-all-menus").show(1000);
+            $("#btn-salvar-perfil").hide();
+            $("#btn-salvar-menus").fadeIn("slow");
+            $('#btn-inserir-cancelar').text("Inserir Depois");
+            $('#input-nome-perfil-insert').prop('disabled', true);
+        })
     }
 
     function IncluirDadosMenusPerfil() {
 
         function IncluirAposRetornarPerfil(id) {
 
-            function IncluirDadosMenu(idMenu, IdPerfil, Acesso) {
+            function IncluirDadosMenu(idMenu, IdPerfil, Acesso, C, R, U, D) {
                 var model = {
                     IdMenus: idMenu,
                     IdNivelAcesso: IdPerfil,
-                    Acesso: Acesso
+                    Acesso: Acesso,
                 };
 
+                var permissao = {
+                    CRIAR: C,
+                    LER: R,
+                    ALTERAR: U,
+                    DELETAR: D
+                };
                 $.ajax({
                     type: 'POST',
                     url: "/Perfil/CreateMenuAcessoToNewPerfil",
-                    data: model,
+                    data: { model: model, modelPermissoes: permissao },
                     success: function (result) {
                         if (result) {
                             return result;
@@ -234,50 +260,37 @@
                 });
             }
 
-            $.ajax({
-                type: 'GET',
-                url: "/Perfil/ReturnAllMenusToModal",
-                success: function (result) {
-                    $.each(result, function (i, item) {
-                        var idMenu = $('#' + item.id).is(":checked")
-                        if (idMenu) {
-                            IncluirDadosMenu(item.id, id, 1)
-                        }
-                    })
-                    Swal.fire({
-                        title: 'Perfil cadastrado com sucesso!',
-                        showDenyButton: false,
-                        showCancelButton: false,
-                        confirmButtonText: 'Ok',
-                        icon: 'success'
-                    }).then((result) => {
-                        if (result.isConfirmed) {
-                            location.href = "/Perfil/Index";
-                        }
-                    })
-                },
-                error: function (error) {
-                    Swal.fire('Não foi possível cadastrar o perfil, contate o suporte.', '', 'error')
-                }
-            });
+            AjaxHelper('GET', '/Perfil/ReturnAllMenusToModal', null, function (result) {
+                $.each(result, function (i, item) {
+                    var idMenu = $('#' + item.id).is(":checked")
+                    var C = 0;
+                    var R = 0;
+                    var U = 0;
+                    var D = 0;
+                    if (idMenu) {
+                        if ($('#td-' + item.id + '-C').is(":checked"))
+                            C = 1
+                        if ($('#td-' + item.id + '-R').is(":checked"))
+                            R = 1
+                        if ($('#td-' + item.id + '-U').is(":checked"))
+                            U = 1
+                        if ($('#td-' + item.id + '-D').is(":checked"))
+                            D = 1
+                        IncluirDadosMenu(item.id, id, 1, C, R, U, D)
+                    }
+                })
+                configureSweetSuccess('Perfil cadastrado com sucesso!', '/Perfil/Index')
+            })
         }
 
-        $.ajax({
-            type: 'GET',
-            url: "/Perfil/ListRoleByName",
-            data: { Role: $('#input-nome-perfil-insert').val() },
-            success: function (result) {
-                console.log("ID DO USUARIO:  ", result)
-                IncluirAposRetornarPerfil(result);
-            },
+        RoleModel = {
+            Role: $('#input-nome-perfil-insert').val()
+        };
 
-            error: function (error) {
-                console.log(error);
-            }
-        });
+        AjaxHelper('GET', '/Perfil/ListRoleByName', RoleModel, function (result) {
+            IncluirAposRetornarPerfil(result);
+        })
     }
-
-
 
     function Excluir(id, role) {
         Swal.fire({
@@ -319,7 +332,150 @@
         })
     }
 
+    function OpenEditPerfilModal(id, role) {
+        $('#modal-update-perfil').modal('show');
+        $('#input-role-alterar').val(role)
+        $('#input-hidden-id-alterar').val(id)
+    }
 
+    function UpdateDadosPerfil() {
+        var model = {
+            Id: $('#input-hidden-id-alterar').val(),
+            Role: $('#input-role-alterar').val()
+        };
+        AjaxHelper('PUT', '/Perfil/UpdatePerfil', model, function (result) {
+            configureSweetSuccess("Perfil alterado com sucesso!", "/Perfil/Index")
+        })
+    }
+
+    function OpenModalMenusAndPermissions(idProfile, role) {
+        $('#modal-update-menus-permissoes').modal('show');
+        $('#input-role-permissao-menus-update').val(role);
+        $('#input-id-permissao-menus-update').val(idProfile);
+        AppendMenusAndPermissoesReturned(idProfile)
+    }
+
+    function AppendMenusUpdate() {
+        AjaxHelper('GET', '/Perfil/ReturnAllMenusToModal', null, function (result) {
+            var tbodyToAppend = $('#tbody-return-menus-update')
+            $.each(result, function (i, item) {
+                var rowContentId = "'table-row-update-" + item.id + "'"
+                var RowContent = '<tr id="table-row-update-' + item.id + '"><td class="text-center"><input class="appended-update" type="checkbox" id="update-' + item.id + '" onclick="CreatePermissionsTdsUpdate(' + rowContentId + ', (this));" ></td><td>' + item.menu + '</td></tr>';
+                tbodyToAppend.append(RowContent).hide().show();
+            })
+        })
+    }
+
+    function CreatePermissionsTdsUpdate(menu, checkbox) {
+        var newRowContent = '<td class="text-center permissionsAppend-update-' + checkbox.id + '"><input type="checkbox" id="td-update-' + checkbox.id + '-R"></td><td class="text-center permissionsAppend-update-' + checkbox.id + '" ><input type="checkbox" class="permissionsAppend-' + checkbox.id + '" id="td-update-' + checkbox.id + '-C"></td><td class="text-center permissionsAppend-update-' + checkbox.id + '"><input type="checkbox" class="permissionsAppend-update-' + checkbox.id + '" id="td-update-' + checkbox.id + '-U"></td><td class="text-center permissionsAppend-update-' + checkbox.id + '"><input type="checkbox" class="permissionsAppend-update-' + checkbox.id + '" id="td-update-' + checkbox.id + '-D"></td>';
+        if ($("#" + checkbox.id).is(":checked")) {
+            $("#" + menu).append(newRowContent);
+        }
+        else {
+            $(".permissionsAppend-update-" + checkbox.id).remove();
+        }
+    }
+
+
+    function AppendMenusAndPermissoesReturned(idProfile) {
+        var model = {
+            idProfile: idProfile,
+        };
+
+        $.ajax({
+            type: 'GET',
+            url: "/Perfil/ReturnAllMenusByProfileId",
+            data: model,
+            success: function (result) {
+                $.each(result, function (i, item) {
+                    $('#update-' + item.id).prop('checked', true);
+                    var menu = $('#table-row-update-' + item.id).attr('id');
+                    var checkbox = $('#update-' + item.id).attr('id');
+
+                    var newRowContent = '<td class="text-center permissionsAppend-update-' + checkbox + '"><input type="checkbox" id="td-update-' + checkbox + '-R"></td><td class="text-center permissionsAppend-update-' + checkbox + '" ><input type="checkbox" class="permissionsAppend-' + checkbox + '" id="td-update-' + checkbox + '-C"></td><td class="text-center permissionsAppend-update-' + checkbox + '"><input type="checkbox" class="permissionsAppend-update-' + checkbox + '" id="td-update-' + checkbox + '-U"></td><td class="text-center permissionsAppend-update-' + checkbox + '"><input type="checkbox" class="permissionsAppend-update-' + checkbox + '" id="td-update-' + checkbox + '-D"></td>';
+                    $("#" + menu).append(newRowContent);
+
+                })
+
+                $.ajax({
+                    type: 'GET',
+                    url: "/Perfil/ReturnAllPermissionsByProfileId",
+                    data: model,
+                    success: function (result) {
+                        console.log(result)
+                        $.each(result, function (i, item) {
+                            if (item.criar == 1) { $('#td-update-update-' + item.idMenu + '-C').prop('checked', true); }
+                            if (item.ler == 1) { $('#td-update-update-' + item.idMenu + '-R').prop('checked', true); }
+                            if (item.alterar == 1) { $('#td-update-update-' + item.idMenu + '-U').prop('checked', true); }
+                            if (item.deletar == 1) { $('#td-update-update-' + item.idMenu + '-D').prop('checked', true); }
+                        })
+                    },
+                    error: function (error) {
+                        Swal.fire('Não foi possível cadastrar os menus, contate o suporte.', '', 'error')
+                    }
+                });
+
+            },
+            error: function (error) {
+                Swal.fire('Não foi possível cadastrar os menus, contate o suporte.', '', 'error')
+            }
+        });
+    }
+
+    function AlterarDadosRetornarPerfil() {
+        var id = $('#input-id-permissao-menus-update').val()
+        console.log("Id PErfil: " + id)
+
+        function AlterarDadosMenu(idMenu, IdPerfil, Acesso, C, R, U, D) {
+            var model = {
+                IdMenus: idMenu,
+                IdNivelAcesso: IdPerfil,
+                Acesso: Acesso,
+            };
+
+            var permissao = {
+                CRIAR: C,
+                LER: R,
+                ALTERAR: U,
+                DELETAR: D
+            };
+            $.ajax({
+                type: 'POST',
+                url: "/Perfil/UpdateMenusAndPermissions",
+                data: { model: model, modelPermissoes: permissao },
+                success: function (result) {
+                    if (result) {
+                        return result;
+                    }
+                },
+                error: function (error) {
+                    Swal.fire('Não foi possível cadastrar os menus, contate o suporte.', '', 'error')
+                }
+            });
+        }
+
+        AjaxHelper('GET', '/Perfil/ReturnAllMenusToModal', null, function (result) {
+            $.each(result, function (i, item) {
+                var idMenu = $('#update-' + item.id).is(":checked")
+                var C = 0;
+                var R = 0;
+                var U = 0;
+                var D = 0;
+                if (idMenu) {
+                    if ($('#td-update-update-' + item.id + '-C').is(":checked"))
+                        C = 1
+                    if ($('#td-update-update-' + item.id + '-R').is(":checked"))
+                        R = 1
+                    if ($('#td-update-update-' + item.id + '-U').is(":checked"))
+                        U = 1
+                    if ($('#td-update-update-' + item.id + '-D').is(":checked"))
+                        D = 1
+                    AlterarDadosMenu(item.id, id, 1, C, R, U, D)
+                }
+            })
+            configureSweetSuccess('Perfil Alterado com sucesso!', '/Perfil/Index')
+        })
+    }
 
 </script>
 

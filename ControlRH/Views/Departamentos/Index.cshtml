@@ -1,7 +1,247 @@
-﻿
+﻿@model DepartamentoViewModel
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Index</h1>
+<body>
+    <div>
+        <div>
+            <form asp-controller="Departamentos" asp-action="FiltroDepartamento" method="post">
+                <div class="card">
+                    <div class="card-header">
+                        Filtros
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label for="floatingInputGrid">Nome do Departamento</label>
+                                <select class="form-control" asp-for="NomeDepartamento" id="SelectDepartamento">
+                                    <option value="">-- SELECIONAR -- </option>
+                                    @foreach (var item in Model.itensReturnToSelect)
+                                    {
+                                        <option value="@item.NomeDepartamento">@item.NomeDepartamento</option>
+                                    }
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md">
+                            <label for="floatingInputGrid" hidden>Gestor do Departamento</label>
+                            <input type="text" autocomplete="off" asp-for="GestorDepartamento" class="form-control" id="Descricao-Departamento" hidden>
+                        </div>
+                    </div>
+                    <div class="card-footer">
+                        <button type="submit" class="btn btn-sm btn-primary float-right" id="Filtro-Departamento">Filtrar</button>
+                        <button type="button" id="insert-departamento" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
+                        <a type="button" asp-controller="Departamentos" asp-action="Index" id="Limpar-Departamento" class="btn btn-sm btn-secondary float-right btn-margin">Limpar</a>
+                    </div>
+                </div>
+
+                <br />
+                <hr />
+                <br />
+
+            </form>
+            @if (Model.itensReturnToTable != null)
+            {
+                <div class="table-responsive">
+                    <table id="grid" class="table table-striped table-bordered" style="width:100%">
+                        <thead>
+                            <tr>
+                                <th>Nome Departamento</th>
+                                <th>Gestor do Departamento</th>
+                                <th>Andar</th>
+                                <th>Sala</th>
+                                <th class="td-th-icon-size"></th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.itensReturnToTable)
+                            {
+                                <tr>
+                                    <td>@item.NomeDepartamento</td>
+                                    <td>@item.GestorDepartamento</td>
+                                    <td>@item.Andar</td>
+                                    <td>@item.Sala</td>
+                                    <td class="td-th-icon-size nosort text-center">
+                                        <a onclick="EditDepartamento(@item.ID)"><i class="fas fa-edit td-icon text-warning" data-toggle="tooltip" title="Editar um Departamento"></i></a>
+                                        <a onclick="DeleteDepartamento(@item.ID , '@item.NomeDepartamento')"><i data-toggle="tooltip" title="Excluir um Departamento" class="fas fa-trash td-icon text-danger"></i></a>
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            }
+        </div>
+    </div>
+
+
+
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form asp-controller="Departamentos" asp-action="InsertDepartamento" method="post">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Cadastrar Departamento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="row g-2">
+                                <div class="col-md">
+                                    <label for="floatingInputGrid">Nome do Departamento</label>
+                                    <input type="text" autocomplete="off" asp-for="NomeDepartamento" class="form-control">
+                                    <label for="floatingInputGrid">Gestor do Departamento</label>
+                                    @if (Model.GestorReturnSelect != null)
+                                    {
+                                        <select class="col-sm-12 form-control" asp-for="GestorDepartamento" id="SelectDepartamento">
+                                            <option>-- SELECIONAR -- </option>
+                                            @foreach (var item in Model.GestorReturnSelect)
+                                            {
+                                                <option value="@item.Nome">@item.Nome</option>
+                                            }
+                                        </select>
+                                    }
+                                    <label for="floatingInputGrid">Andar do Departamento</label>
+                                    <input type="text" autocomplete="off" asp-for="Andar" class="form-control">
+                                    <label for="floatingInputGrid">Sala do Departamento</label>
+                                    <input type="text" autocomplete="off" asp-for="Sala" class="form-control">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" class="btn btn-success float-end btn-sm col-xs-2" value="Inserir" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <!-- Modal Edit -->
+
+    <div class="modal fade" id="edit-Modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <form asp-controller="Departamentos" asp-action="EditDepartamento" method="post">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Editar Departamento</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="card-body">
+                            <div class="row g-2">
+                                <input hidden id="id-Departamento" asp-for="ID" />
+                                <div class="col-md">
+                                    <label for="floatingInputGrid">Nome do Departamento</label>
+                                    <input type="text" autocomplete="off" asp-for="NomeDepartamento" class="form-control" id="nome-Departamento">
+                                    <label for="floatingInputGrid">Gestor do Departamento</label>
+                                    @if (Model.GestorReturnSelect != null)
+                                    {
+                                        <select class="col-sm-12 form-control" asp-for="GestorDepartamento" id="gestor-Departamento">
+                                            @foreach (var item in Model.GestorReturnSelect)
+                                            {
+                                                <option value="@item.Nome">@item.Nome</option>
+                                            }
+
+                                        </select>
+                                    }
+                                    <label for="floatingInputGrid">Andar do Departamento</label>
+                                    <input type="text" autocomplete="off" asp-for="Andar" class="form-control" id="andar-Departamento">
+                                    <label for="floatingInputGrid">Sala do Departamento</label>
+                                    <input type="text" autocomplete="off" asp-for="Sala" class="form-control" id="sala-Departamento">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <input type="submit" onclick="CreateDepartamento()" class="btn btn-success float-end btn-sm col-xs-2" id="EditDepartamento" value="Editar" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</body>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#grid').DataTable();
+    });
+
+    $("#insert-departamento").click(function () {
+        $('#exampleModal').modal('show');
+    });
+
+    function EditDepartamento(ID) {
+        $('#edit-Modal').modal('show');
+        $.ajax({
+            type: 'GET',
+            url: "/Departamentos/ReturnDadosDepartamentoEdit",
+            data: { id: ID },
+            success: function (result) {
+                $.each(result, function (i, item) {
+                    $("#id-Departamento").val(item.id)
+                    $("#nome-Departamento").val(item.nomeDepartamento)
+                    $("#gestor-Departamento").val(item.gestorDepartamento)
+                    $("#andar-Departamento").val(item.andar)
+                    $("#sala-Departamento").val(item.sala)
+                })
+            },
+            error: function (error) {
+                console.log(error);
+            }
+        });
+    }
+
+    function DeleteDepartamento(ID, Nome) {
+        console.log(ID)
+        Swal.fire({
+            title: 'Tem certeza que deseja remover?',
+            text: 'Departamento:' + Nome,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Confirmar'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: 'GET',
+                    url: "/Departamentos/DeleteDepartamento",
+                    data: { id: ID },
+                    success: function (result) {
+                        Swal.fire({
+                            title: 'Departamento deletado com sucesso!',
+                            showDenyButton: false,
+                            showCancelButton: false,
+                            confirmButtonText: 'Ok',
+                            icon: 'success'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                location.href = "/Departamentos/Index";
+                            }
+                        })
+                    },
+                    error: function (error) {
+                        Swal.fire(
+                            'Erro!',
+                            'Não foi possível deletar esse Departamento, entre em contato com o suporte.',
+                            'error'
+                        )
+                    }
+                });
+
+            }
+
+        })
+    }
+</script>
+
+
 

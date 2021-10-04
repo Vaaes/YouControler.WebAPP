@@ -6,6 +6,7 @@ namespace ControlRH.Controllers
     public class BaseController : Controller
     {
         public string SessionToken;
+        public const string MyProperty = "ExecutadoComSucesso";
 
         //public BaseController()
         //{

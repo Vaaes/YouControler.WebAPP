@@ -22,8 +22,8 @@ namespace ControlRH.Models
 
     public class UsuarioViewModel
     {
-        public int Id { get; set; }
-        public int IdNivelAcesso { get; set; }
+        public int? Id { get; set; }
+        public int? IdNivelAcesso { get; set; }
         public string Nome { get; set; }
         public string CPF { get; set; }
         public DateTime Nascimento { get; set; }
@@ -35,6 +35,7 @@ namespace ControlRH.Models
         public string Senha { get; set; }
         public string Role { get; set; }
         public string token { get; set; }
-        public IEnumerable<Usuario> itens { get; set; }
+        public IEnumerable<Usuario> Itens { get; set; }
+        public IEnumerable<Perfil> ItensToPerfilSelect { get; set; }
     }
 }

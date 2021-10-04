@@ -13,18 +13,36 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" charset="utf-8"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/dt-1.11.3/b-2.0.1/b-html5-2.0.1/b-print-2.0.1/date-1.1.1/fc-4.0.0/fh-3.2.0/r-2.2.9/rr-1.2.8/datatables.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Chivo&display=swap" rel="stylesheet">
+
     <style>
+        * {
+            font-family: 'Chivo', sans-serif;
+        }
+
         .btn-margin {
             margin-right: 5px;
         }
 
-        .td-icon{
+        .td-icon {
             cursor: pointer;
         }
 
-        .td-th-icon-size{
+        .td-th-icon-size {
             width: 60px;
         }
+
+        a.button-large {
+            display: block;
+            font-size: 14px;
+            padding: 13px 42px 16px;
+            background: #401EDF;
+            color: #FFF;
+            border-radius: 4px;
+        }
+
     </style>
 </head>
 <body>
@@ -35,7 +53,7 @@
         <div class="header">
             <div class="header-menu">
                 <div class="title">RH<span>Control</span></div>
-                <div class="sidebar-btn">
+                <div class="sidebar-btn" style="margin-left: 130px">
                     <i class="fas fa-bars"></i>
                 </div>
                 <ul>
@@ -51,7 +69,6 @@
                 <div id="returnPartialView">
 
                 </div>
-
             </div>
         </div>
         <!--sidebar end-->
@@ -68,6 +85,9 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            if (/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                $(".swrapper").toggleClass("collapses");
+            }
             $(".sidebar-btn").click(function () {
                 $(".swrapper").toggleClass("collapses");
             });
@@ -99,11 +119,17 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.1.5/dist/sweetalert2.all.min.js"></script>
     <!-- Bootbox -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/bootbox.js/5.5.2/bootbox.min.js" integrity="sha512-RdSPYh1WA6BF0RhpisYJVYkOyTzK4HwofJ3Q7ivt/jkpW6Vc8AurL1R+4AUcvn9IwEKAPm/fk7qFZW3OuiUDeg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- AJAX HELPER -->
+    <script src="~/helpers/ajax-helper.js"></script>
 
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
     <script type="text/javascript" src="https://cdn.datatables.net/v/bs4/dt-1.11.3/b-2.0.1/b-html5-2.0.1/b-print-2.0.1/date-1.1.1/fc-4.0.0/fh-3.2.0/r-2.2.9/rr-1.2.8/datatables.min.js"></script>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.mask/1.14.16/jquery.mask.min.js" integrity="sha512-pHVGpX7F/27yZ0ISY+VVjyULApbDlD0/X0rgGbTqCE7WFW5MezNTWG/dnhtbBuICzsd0WQPgpE4REBLv+UqChw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <!-- CHARTS.JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.5.1/chart.min.js" integrity="sha512-Wt1bJGtlnMtGP0dqNFH1xlkLBNpEodaiQ8ZN5JLA5wpc1sUlk/O5uuOMNgvzddzkpvZ9GLyYNa8w2s7rqiTk5Q==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    
     @RenderSection("Scripts", required: false)
 </body>
 

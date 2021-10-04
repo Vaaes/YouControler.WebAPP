@@ -97,21 +97,14 @@ namespace ControlRH.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateMenuAcessoToNewPerfil(NivelAcesso model)
+        public IActionResult CreateMenuAcessoToNewPerfil(NivelAcesso model, Permissoes modelPermissoes)
         {
             try
             {
-                var modelPermissions = new Permissoes{
-                    IdMenu = model.IdMenus,
-                    IdPerfilAcesso = model.IdNivelAcesso,
-                    LER = 1,
-                    ALTERAR = 1,
-                    CRIAR = 1,
-                    DELETAR = 1
-                };
-
+                modelPermissoes.IdMenu = model.IdMenus;
+                modelPermissoes.IdPerfilAcesso = model.IdNivelAcesso;
                 var response = _nivelAcessoRepository.Create(model, HttpContext.Session.GetString("SessionToken"));
-                var responsePermissions = _permissoesRepository.Create(modelPermissions, HttpContext.Session.GetString("SessionToken"));;
+                var responsePermissions = _permissoesRepository.Create(modelPermissoes, HttpContext.Session.GetString("SessionToken"));
                 if (!response)
                     return Ok("Erro ao tentar inserir Menus para o Perfil");
                 return Ok("Controle de Acesso aos Menus inserido com sucesso!");
@@ -122,20 +115,69 @@ namespace ControlRH.Controllers
             }
         }
 
-        public IActionResult UpdatePerfil(Perfil perfil)
+
+        public IActionResult UpdateMenusAndPermissions(NivelAcesso model, Permissoes modelPermissoes)
         {
             try
             {
-                var response = _perfilRepository.Update(perfil, HttpContext.Session.GetString("SessionToken"));
+                modelPermissoes.IdMenu = model.IdMenus;
+                modelPermissoes.IdPerfilAcesso = model.IdNivelAcesso;
+
+                var response = _nivelAcessoRepository.Update(model, HttpContext.Session.GetString("SessionToken"));
+                var responsePermissions = _permissoesRepository.Update(modelPermissoes, HttpContext.Session.GetString("SessionToken"));
+
                 if (!response)
-                    return Ok("Erro ao tentar alterar o perfil");
-                return Ok("Perfil alterar com sucesso!");
+                    return Ok("Erro ao tentar inserir Menus para o Perfil");
+                return Ok("Controle de Acesso aos Menus inserido com sucesso!");
             }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> ReturnAllMenusByProfileId(int idProfile)
+        {
+            try
+            {
+                var model = await _permissoesRepository.GetMenuByProfileId(idProfile, HttpContext.Session.GetString("SessionToken"));
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ReturnAllPermissionsByProfileId(int idProfile)
+        {
+            try
+            {
+                var model = await _permissoesRepository.GetByProfileId(idProfile, HttpContext.Session.GetString("SessionToken"));
+                return Ok(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IActionResult UpdatePerfil(Perfil model)
+        {
+            try
+            {
+                var response = _perfilRepository.Update(model, HttpContext.Session.GetString("SessionToken"));
+                if (!response)
+                    return Ok("Erro ao tentar alterar o perfil");
+                return Ok("Perfil alterado com sucesso!");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         [HttpDelete]
         public async Task<IActionResult> DeletePerfil(int Id)
         {

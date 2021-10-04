@@ -38,6 +38,34 @@ namespace ControlRH.Repository
             }
             return model;
         }
+        public async Task<IEnumerable<Permissoes>> GetByProfileId(int ProfileId, string token)
+        {
+            IEnumerable<Permissoes> model = new List<Permissoes>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync("/Permissoes/GetByProfile/" + ProfileId);
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                model = JsonConvert.DeserializeObject<IEnumerable<Permissoes>>(results);
+            }
+            return model;
+        }
+
+        public async Task<IEnumerable<Menus>> GetMenuByProfileId(int ProfileId, string token)
+        {
+            IEnumerable<Menus> model = new List<Menus>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync("/Menu/GetByProfile/" + ProfileId);
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                model = JsonConvert.DeserializeObject<IEnumerable<Menus>>(results);
+            }
+            return model;
+        }
+
 
         public bool Create(Permissoes model, string token)
         {

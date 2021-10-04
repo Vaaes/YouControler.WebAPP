@@ -22,8 +22,21 @@ namespace ControlRH.Repository
                 var results = res.Content.ReadAsStringAsync().Result;
                 model = JsonConvert.DeserializeObject<IEnumerable<Usuario>>(results);
             }
-
             return model;
+        }
+
+        public async Task<IEnumerable<Usuario>> GetUsuarioByParam(string token, int? id = null, string nome = null, int? IdNivelAcesso = null, string cpf = null, string email = null, string usuario = null)
+        {
+            IEnumerable<Usuario> ferias = new List<Usuario>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync($"/Usuario/GetUsuarioByParam?id={id}&nome={nome}&IdNivelAcesso={IdNivelAcesso}&cpf={cpf}&email={email}&usuario={usuario}");
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                ferias = JsonConvert.DeserializeObject<IEnumerable<Usuario>>(results);
+            }
+            return ferias;
         }
 
         public bool Create(Usuario model, string token)
@@ -63,8 +76,22 @@ namespace ControlRH.Repository
                 var results = res.Content.ReadAsStringAsync().Result;
                 model = JsonConvert.DeserializeObject<IEnumerable<Usuario>>(results);
             }
-
             return model;
+        }
+
+        public bool Update(Usuario model, string token)
+        {
+            HttpClient client = _api.Initial(token);
+
+            var putTask = client.PutAsJsonAsync<Usuario>("Usuario", model);
+            putTask.Wait();
+
+            var result = putTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

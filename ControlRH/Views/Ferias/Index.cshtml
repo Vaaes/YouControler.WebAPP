@@ -1,11 +1,11 @@
-﻿
+﻿@model FeriasViewModel
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Ferias";
 }
 
 <div>
     <div>
-        <form asp-controller="Ferias" asp-action="GetFerias"  method="get">
+        <form asp-controller="Ferias" asp-action="GetFerias" method="get">
             <div class="card">
                 <div class="card-header">
                     Filtros
@@ -13,48 +13,215 @@
                 <div class="card-body">
                     <div class="row g-2">
                         <div class="col-md">
-                            <label for="floatingInputGrid">Colaborador</label>
-                            <select class="form-control" id="">
-                                <option value="">Selecione...</option>
-                            </select>
+                            <label>Data Início</label>
+                            <input type="text" class="form-control placeholder" autocomplete="off" asp-for="Data_Inicio" maxlength="10">
                         </div>
 
                         <div class="col-md">
-                            <label for="floatingInputGrid">Email</label>
-                            <input type="email" class="form-control" id="floatingInputGrid" placeholder="name@example.com">
+                            <label>Data Final</label>
+                            <input type="text" class="form-control placeholder" autocomplete="off" asp-for="Data_Final" maxlength="10">
                         </div>
 
                         <div class="col-md">
-                            <label for="floatingInputGrid">Aprovado</label>
-                            <input type="checkbox" class="form" id="floatingInputGrid" placeholder="name@example.com">
+                            <label>Usuarios</label>
+                            <select class="form-control" asp-for="IdUsuario" id="usuarios"></select>
                         </div>
                     </div>
                 </div>
                 <div class="card-footer">
-                    <a href="#" class="btn btn-success float-right btn-sm col-xs-2">Inserir</a>
-                    <a href="#" class="btn btn-dark float-right btn-sm col-xs-2 btn-spacing">Limpar</a>
-                    <a href="#" class="btn btn-primary float-right btn-sm col-xs-2 btn-spacing">Pesquisar</a>
+                    <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
+                    <button type="button" id="btn-insert" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
                 </div>
             </div>
         </form>
 
-        <table class="table table-responsive table-hover">
-            <thead>
-                <tr>
-                    <th>Colaborador</th>
-                    <th>Férias Inicio</th>
-                    <th>Férias Final</th>
-                    <th>Cargo</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>Teste</td>
-                    <td>Teste</td>
-                    <td>Teste</td>
-                </tr>
-            </tbody>
-        </table>
 
+        <br />
+        <hr />
+        <br />
+
+        <div class="table-responsive">
+            <table id="grid" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Colaborador</th>
+                        <th>Férias Inicio</th>
+                        <th>Férias Final</th>
+                        <th>Cargo</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Itens)
+                    {
+                        <tr>
+                            <td>@item.Nome</td>
+                            <td>@item.Data_Inicio</td>
+                            <td>@item.Data_Final</td>
+                            @if ((bool)@item.Aprovado)
+                            {
+                                <td>Aprovado</td>
+                            }
+                            else
+                            {
+                                <td>Ainda não Aprovado</td>
+                            }
+                            <td class="td-th-icon-size nosort text-center">
+                                <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id,'@item.Data_Inicio', '@item.Data_Final')" title="Editar Férias"><i class="fas fa-edit td-icon text-success"></i></a>
+                                <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteFeriasData(@item.Id, '@item.Data_Inicio', '@item.Data_Final')" title="Excluir solicitação de Férias"><i class="fas fa-trash td-icon text-danger"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+
+        <div class="modal" id="modal-insert">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Inserir Férias</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Data Início</label>
+                                <input type="text" class="form-control placeholder" autocomplete="off" id="data-inicio-insert" maxlength="10">
+                            </div>
+
+                            <div class="col-md">
+                                <label>Data Final</label>
+                                <input type="text" class="form-control placeholder" autocomplete="off" id="data-final-insert" maxlength="10">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="InsertFeriasData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-update">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Alterar</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input hidden id="id-update" />
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Data Início</label>
+                                <input type="date" class="form-control" autocomplete="off" id="data-inicio-update" placeholder="dd/MM/aaaa">
+                            </div>
+
+                            <div class="col-md">
+                                <label>Data Final</label>
+                                <input type="date" class="form-control" autocomplete="off" id="data-final-update" placeholder="dd/MM/aaaa">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateFeriasData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#grid').DataTable();
+
+        $('.placeholder').mask("00/00/0000", { placeholder: "__/__/____" });
+
+        $("#btn-filtra").hide();
+        $("#btn-insert").hide();
+        $(".btn-edit").hide();
+        $(".btn-excluir").hide();
+
+        HasPermission(5);
+    });
+
+    $("#btn-insert").click(function () {
+        $('#modal-insert').modal('show');
+    });
+
+    function OpenUpdateModal(Id, dataInicio, dataFinal) {
+        $('#modal-update').modal('show');
+        $("#id-update").val(Id);
+        $('#data-inicio-update').val(dataInicio);
+        $('#data-final-update').val(dataFinal);
+    }
+
+    function InsertFeriasData() {
+        var model = {
+            Data_Inicio: $('#data-inicio-insert').val(),
+            Data_Final: $('#data-final-insert').val(),
+            Aprovado: 0
+        }
+        AjaxHelper('POST', '/Ferias/CreateFerias', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Férias inseridas com Sucesso", "/Ferias/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function UpdateFeriasData() {
+        var model = {
+            Id: $("#id-update").val(),
+            Data_Inicio: $('#data-inicio-update').val(),
+            Data_Final: $('#data-final-update').val()
+        };
+
+        AjaxHelper('PUT', '/Ferias/UpdateFerias', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Férias alteradas com Sucesso", "/Ferias/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function DeleteFeriasAjax(id) {
+        var model = {
+            Id: id,
+        };
+        AjaxHelper('DELETE', '/Ferias/DeleteFerias', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Férias deletadas com sucesso!", "/Ferias/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function DeleteFeriasData(id, dataInicio, dataFinal) {
+        Swal.fire({
+            title: "Férias",
+            text: "Tem certeza que deseja remover as férias com inicio em: " + dataInicio + " e final em: " + dataFinal + "?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'Sim, deletar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                DeleteFeriasAjax(id)
+            }
+        })
+    }
+</script>

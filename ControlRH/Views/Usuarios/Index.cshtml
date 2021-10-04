@@ -1,7 +1,346 @@
-﻿
+﻿@model UsuarioViewModel
 @{
-    ViewData["Title"] = "USuarios";
+    ViewData["Title"] = "Usuarios";
 }
 
-<h1>Index</h1>
+<div>
+    <div>
+        <form asp-controller="Usuarios" asp-action="GetUsuario" method="get">
+            <div class="card">
+                <div class="card-header">
+                    Filtros
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Nome</label>
+                            <input type="text" class="form-control" asp-for="Nome" autocomplete="off" />
+                        </div>
+                        <div class="col-md">
+                            <label>Perfil</label>
+                            <select class="form-control" asp-for="IdNivelAcesso">
+                                <option value="">-SELECIONE-</option>
+                                @foreach (var item in Model.ItensToPerfilSelect)
+                                {
+                                    <option value="@item.Id">@item.Role</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <label>CPF</label>
+                            <input type="text" class="form-control" asp-for="CPF" autocomplete="off" />
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>CEP</label>
+                            <input type="text" class="form-control" asp-for="CEP" autocomplete="off" />
+                        </div>
+                        <div class="col-md">
+                            <label>Email</label>
+                            <input type="text" class="form-control" asp-for="Email" autocomplete="off" />
+                        </div>
+                        <div class="col-md">
+                            <label>Usuario</label>
+                            <input type="text" class="form-control" asp-for="Login" autocomplete="off" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
+                    <button type="button" id="btn-insert" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
+                </div>
+            </div>
+        </form>
 
+        <br />
+        <hr />
+        <br />
+
+        <div class="table-responsive">
+            <table id="grid" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Perfil</th>
+                        <th>CPF</th>
+                        <th>Telefone Celular</th>
+                        <th>Email</th>
+                        <th>Usuario</th>
+                        <th class="nosort"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Itens)
+                    {
+                        <tr>
+                            <td>@item.Nome</td>
+                            <td>@item.Role</td>
+                            <td>@item.CPF</td>
+                            <td>@item.Telefone_Celular</td>
+                            <td>@item.Email</td>
+                            <td>@item.Login</td>
+                            <td class="td-th-icon-size nosort text-center">
+                                <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, @item.IdNivelAcesso, '@item.Nome', '@item.CPF', '@item.Nascimento', '@item.Telefone_Celular', '@item.Telefone_Residencial', '@item.Email', '@item.CEP', '@item.Login')" title="Editar cargo"><i class="fas fa-edit td-icon text-success"></i></a>
+                                <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteUsuarioData(@item.Id, '@item.Login')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="modal-insert">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Inserir</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Perfil</label>
+                                <select class="form-control" id="id-perfil-insert">
+                                    <option value="">-SELECIONE-</option>
+                                    @foreach (var item in Model.ItensToPerfilSelect)
+                                    {
+                                        <option value="@item.Id">@item.Role</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md">
+                                <label>Usuario <span class="badge badge-dark" style="background-color: #401EDF;">(senha padrão: puc@2021)</span></label>
+                                <input type="text" class="form-control" autocomplete="off" id="login-usuario-insert">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Nome</label>
+                                <input type="text" class="form-control" autocomplete="off" id="nome-usuario-insert">
+                            </div>
+                            <div class="col-md">
+                                <label>CPF</label>
+                                <input type="text" class="form-control" autocomplete="off" id="cpf-usuario-insert">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Data de Nascimento</label>
+                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="nascimento-usuario-insert">
+                            </div>
+                            <div class="col-md">
+                                <label>CEP</label>
+                                <input type="text" class="form-control" autocomplete="off" id="cep-usuario-insert">
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Telefone Celular</label>
+                                <input type="text" class="form-control" autocomplete="off" id="celular-usuario-insert">
+                            </div>
+                            <div class="col-md">
+                                <label>Telefone Residencial</label>
+                                <input type="text" class="form-control" autocomplete="off" id="residencial-usuario-insert">
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Email</label>
+                                <input type="text" class="form-control" autocomplete="off" id="email-usuario-insert">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="InsertUsuarioData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-update">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Alterar</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input id="id-update" hidden />
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Perfil</label>
+                                <select class="form-control" id="id-perfil-update">
+                                    <option value="">-SELECIONE-</option>
+                                    @foreach (var item in Model.ItensToPerfilSelect)
+                                    {
+                                        <option value="@item.Id">@item.Role</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md">
+                                <label>Usuario</label>
+                                <input type="text" class="form-control" autocomplete="off" id="login-usuario-update">
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Nome</label>
+                                <input type="text" class="form-control" autocomplete="off" id="nome-usuario-update">
+                            </div>
+                            <div class="col-md">
+                                <label>CPF</label>
+                                <input type="text" class="form-control" autocomplete="off" id="cpf-usuario-update">
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Data de Nascimento</label>
+                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="nascimento-usuario-update">
+                            </div>
+                            <div class="col-md">
+                                <label>CEP</label>
+                                <input type="text" class="form-control" autocomplete="off" id="cep-usuario-update">
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Telefone Celular</label>
+                                <input type="text" class="form-control" autocomplete="off" id="celular-usuario-update">
+                            </div>
+                            <div class="col-md">
+                                <label>Telefone Residencial</label>
+                                <input type="text" class="form-control" autocomplete="off" id="residencial-usuario-update">
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Email</label>
+                                <input type="text" class="form-control" autocomplete="off" id="email-usuario-update">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateUsuarioData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#grid').DataTable();
+        $("#btn-filtra").hide();
+        $("#btn-insert").hide();
+        $(".btn-edit").hide();
+        $(".btn-excluir").hide();
+
+        $('.placeholder').mask("00/00/0000", { placeholder: "__/__/____" });
+
+        HasPermission(1);
+    });
+
+    $("#btn-insert").click(function () {
+        $('#modal-insert').modal('show');
+    });
+
+    function OpenUpdateModal(Id, IdNivelAcesso, Nome, CPF, Nascimento, Telefone_Celular, Telefone_Residencial, Email, CEP, Login) {
+        $('#modal-update').modal('show');
+        $("#id-update").val(Id);
+        $('#id-perfil-update').val(IdNivelAcesso);
+        $('#nome-usuario-update').val(Nome);
+        $('#cpf-usuario-update').val(CPF);
+        $('#nascimento-usuario-update').val(Nascimento);
+        $('#celular-usuario-update').val(Telefone_Celular);
+        $('#residencial-usuario-update').val(Telefone_Residencial);
+        $('#email-usuario-update').val(Email);
+        $('#cep-usuario-update').val(CEP);
+        $('#login-usuario-update').val(Login);
+    }
+
+    function InsertUsuarioData() {
+        var model = {
+            IdNivelAcesso: $('#id-perfil-insert').val(),
+            Nome: $('#nome-usuario-insert').val(),
+            CPF: $('#cpf-usuario-insert').val(),
+            Nascimento: $('#nascimento-usuario-insert').val(),
+            Telefone_Celular: $('#celular-usuario-insert').val(),
+            Telefone_Residencial: $('#residencial-usuario-insert').val(),
+            Email: $('#email-usuario-insert').val(),
+            CEP: $('#cep-usuario-insert').val(),
+            Login: $('#login-usuario-insert').val()
+        }
+
+        AjaxHelper('POST', '/Usuarios/CreateUsuario', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Usuário inserido com Sucesso", "/Usuarios/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function UpdateUsuarioData() {
+        var model = {
+            Id: $("#id-update").val(),
+            IdNivelAcesso: $('#id-perfil-update').val(),
+            Nome: $('#nome-usuario-update').val(),
+            CPF: $('#cpf-usuario-update').val(),
+            Nascimento: $('#nascimento-usuario-update').val(),
+            Telefone_Celular: $('#celular-usuario-update').val(),
+            Telefone_Residencial: $('#residencial-usuario-update').val(),
+            Email: $('#email-usuario-update').val(),
+            CEP: $('#cep-usuario-update').val(),
+            Login: $('#login-usuario-update').val(),
+        };
+
+        AjaxHelper('PUT', '/Usuarios/UpdateUsuario', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Usuário alterado com Sucesso", "/Usuarios/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function DeleteUsuarioAjax(id) {
+        var model = {
+            Id: id,
+        };
+        AjaxHelper('DELETE', '/Usuarios/DeleteUsuario', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Usuario deletado com sucesso!", "/Usuarios/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function DeleteUsuarioData(id, Usuario) {
+        Swal.fire({
+            title: Usuario,
+            text: "Tem certeza que deseja remover o usuario: " + Usuario + " ?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'Sim, deletar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                DeleteUsuarioAjax(id)
+            }
+        })
+    }
+</script>
