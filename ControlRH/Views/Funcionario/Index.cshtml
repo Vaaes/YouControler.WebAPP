@@ -1,0 +1,295 @@
+﻿@model FuncionarioViewModel
+@{
+    ViewData["Title"] = "Funcionario";
+}
+
+<div>
+    <div>
+        <form asp-controller="Usuarios" asp-action="GetUsuario" method="get">
+            <div class="card">
+                <div class="card-header">
+                    Filtros
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Nome</label>
+                            <input type="text" class="form-control" asp-for="Nome" autocomplete="off" />
+                        </div>
+                        <div class="col-md">
+                            <label>Cargo</label>
+                            <select class="form-control" asp-for="IdCargo">
+                                <option value="">-SELECIONE-</option>
+                                @foreach (var item in Model.Itens)
+                                {
+                                    <option value="@item.Id">@item.Nome</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="col-md">
+                            <label>Tipo</label>
+                            <input type="text" class="form-control" asp-for="Tipo" autocomplete="off" />
+                        </div>
+
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Email</label>
+                            <input type="text" class="form-control" asp-for="Email" autocomplete="off" />
+                        </div>
+                        <div class="col-md">
+                            <label>CPF</label>
+                            <input type="text" class="form-control" asp-for="CPF" autocomplete="off" />
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
+                    <button type="button" id="btn-insert" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
+                </div>
+            </div>
+        </form>
+
+        <br />
+        <hr />
+        <br />
+
+        <div class="table-responsive">
+            <table id="grid" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>CPF</th>
+                        <th>Cargo</th>
+                        <th>Tipo</th>
+                        <th>Email</th>
+                        <th>Salario</th>
+                        <th class="nosort"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Itens)
+                    {
+                    <tr>
+                        <td>@item.Nome</td>
+                        <td>@item.CPF</td>
+                        <td>@item.IdCargo</td>
+                        <td>@item.Tipo</td>
+                        <td>@item.Email</td>
+                        <td>@item.Salario</td>
+                        <td class="td-th-icon-size nosort text-center">
+                            <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, @item.Nome, '@item.CPF', '@item.Tipo', '@item.Email', '@item.Salario', @item.IdCargo)" title="Editar cargo"><i class="fas fa-edit td-icon text-success"></i></a>
+                            <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteFuncionarioData(@item.Id, '@item.Nome')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
+                        </td>
+                    </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+
+        <div class="modal fade" id="modal-insert">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Inserir</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Cargo</label>
+                                <select class="form-control" id="id-cargo-insert">
+                                    <option value="">-SELECIONE-</option>
+                                    @foreach (var item in Model.Itens)
+                                    {
+                                        <option value="@item.Id">@item.Nome</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md">
+                                <label>Nome</label>
+                                <input type="text" class="form-control" autocomplete="off" id="nome-funcionario-insert">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>CPF</label>
+                                <input type="text" class="form-control" autocomplete="off" id="cpf-funcionario-insert">
+                            </div>
+                            <div class="col-md">
+                                <label>Tipo</label>
+                                <input type="text" class="form-control" autocomplete="off" id="tipo-funcionario-insert">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Email</label>
+                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="email-funcionario-insert">
+                            </div>
+                            <div class="col-md">
+                                <label>Salario</label>
+                                <input type="text" class="form-control" autocomplete="off" id="salario-funcionario-insert">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="InsertUsuarioData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" id="modal-update">
+            <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Alterar</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input hidden id="id-update" />
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Cargo</label>
+                                <select class="form-control" id="id-cargo-update">
+                                    <option value="">-SELECIONE-</option>
+                                    @foreach (var item in Model.Itens)
+                                    {
+                                        <option value="@item.Id">@item.Nome</option>
+                                    }
+                                </select>
+                            </div>
+                            <div class="col-md">
+                                <label>Nome</label>
+                                <input type="text" class="form-control" autocomplete="off" id="nome-funcionario-update">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>CPF</label>
+                                <input type="text" class="form-control" autocomplete="off" id="cpf-funcionario-update">
+                            </div>
+                            <div class="col-md">
+                                <label>Tipo</label>
+                                <input type="text" class="form-control" autocomplete="off" id="tipo-funcionario-update">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Email</label>
+                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="email-funcionario-update">
+                            </div>
+                            <div class="col-md">
+                                <label>Salario</label>
+                                <input type="text" class="form-control" autocomplete="off" id="salario-funcionario-update">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateUsuarioData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#grid').DataTable();
+        $("#btn-filtra").hide();
+        $("#btn-insert").hide();
+        $(".btn-edit").hide();
+        $(".btn-excluir").hide();
+
+        HasPermission(4);
+    });
+
+    $("#btn-insert").click(function () {
+        $('#modal-insert').modal('show');
+    });
+
+    function OpenUpdateModal(Id, nome, CPF, tipo, email, salario, idcargo) {
+        $('#modal-update').modal('show');
+        $("#id-update").val(Id);
+        $('#nome-funcionario-update').val(nome);
+        $('#cpf-funcionario-update').val(CPF);
+        $('#tipo-funcionario-update').val(tipo);
+        $('#email-funcionario-update').val(email);
+        $('#salario-funcionario-update').val(salario);
+        $('#id-cargo-update').val(idcargo);
+    }
+
+    function InsertUsuarioData() {
+        var model = {
+            Nome: $('#nome-funcionario-insert').val(),
+            CPF: $('#cpf-funcionario-insert').val(),
+            Tipo: $('#tipo-funcionario-insert').val(),
+            Email: $('#email-funcionario-insert').val(),
+            Salario: $('#salario-funcionario-insert').val(),
+            IdCargo: $('#id-cargo-insert').val()
+        }
+
+        AjaxHelper('POST', '/Usuarios/CreateFuncionario', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Usuário inserido com Sucesso", "/Funcionario/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function UpdateUsuarioData() {
+        var model = {
+            Id: $("#id-update").val(),
+            Nome: $('#nome-funcionario-update').val(),
+            CPF: $('#cpf-funcionario-update').val(),
+            Tipo: $('#tipo-funcionario-update').val(),
+            Email: $('#email-funcionario-update').val(),
+            Salario: $('#salario-funcionario-update').val(),
+            IdCargo: $('#id-cargo-update').val()
+        };
+
+        AjaxHelper('PUT', '/Funcionario/UpdateFuncionario', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Usuário alterado com Sucesso", "/Funcionario/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function DeleteUsuarioAjax(id) {
+        var model = {
+            Id: id,
+        };
+        AjaxHelper('DELETE', '/Funcionario/DeleteFuncionario', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Usuario deletado com sucesso!", "/Funcionario/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+    function DeleteUsuarioData(id, funcionario) {
+        Swal.fire({
+            title: funcionario,
+            text: "Tem certeza que deseja remover o funcionario: " + funcionario + " ?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'Sim, deletar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                DeleteUsuarioAjax(id)
+            }
+        })
+    }
+</script>
