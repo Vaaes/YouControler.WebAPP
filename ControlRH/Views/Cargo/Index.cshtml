@@ -68,15 +68,15 @@
                     <div class="modal-body">
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Nome do Cargo</label>
-                                <input type="text" class="form-control" autocomplete="off" id="nome-cargo-insert">
+                                <label>Nome do Cargo<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-cargo-insert">
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Descrição do Cargo</label>
-                                <textarea type="text" class="form-control" autocomplete="off" id="descricao-cargo-insert"></textarea>
+                                <label>Descrição do Cargo<span class="text-danger">*</span></label>
+                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="descricao-cargo-insert"></textarea>
                             </div>
                         </div>
 
@@ -100,14 +100,14 @@
                         <input hidden id="id-update" />
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Nome do Cargo</label>
-                                <input type="text" class="form-control" autocomplete="off" id="nome-cargo-update">
+                                <label>Nome do Cargo<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control"  onchange="OnChangeValidation(this)" autocomplete="off" id="nome-cargo-update">
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Descrição do Cargo</label>
-                                <textarea type="text" class="form-control" autocomplete="off" id="descricao-cargo-update"></textarea>
+                                <label>Descrição do Cargo<span class="text-danger">*</span></label>
+                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="descricao-cargo-update"></textarea>
                             </div>
                         </div>
                     </div>
@@ -138,6 +138,51 @@
         $('#modal-insert').modal('show');
     });
 
+    function ValidateBeforeInsert() {
+        var model = {
+            Nome_Cargo: $('#nome-cargo-insert'),
+            Descricao_Cargo: $('#descricao-cargo-insert')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+    function ValidateBeforeUpdate() {
+        var model = {
+            Nome_Cargo: $('#nome-cargo-update'),
+            Descricao_Cargo: $('#descricao-cargo-update')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+
+    function OnChangeValidation(campo) {
+        if ($(campo).val() != "") {
+            $(campo).css("border-color", "")
+        }
+    }
+
+
+
     function OpenUpdateModal(Id, NomeCargo, DescCargo) {
         $('#modal-update').modal('show');
         $("#id-update").val(Id);
@@ -150,14 +195,16 @@
             Nome_Cargo: $('#nome-cargo-insert').val(),
             Descricao_Cargo: $('#descricao-cargo-insert').val()
         }
-        AjaxHelper('POST', '/Cargo/CreateCargo', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Cargo inserido com Sucesso", "/Cargo/Index")
-            }
-            else {
-                configureSweetError('error');
-            }
-        })
+        if (ValidateBeforeInsert()) {
+            AjaxHelper('POST', '/Cargo/CreateCargo', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Cargo inserido com Sucesso", "/Cargo/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
     }
 
     function UpdateCargoData() {
@@ -167,14 +214,16 @@
             Descricao_Cargo: $('#descricao-cargo-update').val()
         };
 
-        AjaxHelper('PUT', '/Cargo/UpdateCargo', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Férias alteradas com Sucesso", "/Cargo/Index")
-            }
-            else {
-                configureSweetError('error');
-            }
-        })
+        if (ValidateBeforeUpdate()) {
+            AjaxHelper('PUT', '/Cargo/UpdateCargo', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Férias alteradas com Sucesso", "/Cargo/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
     }
 
     function DeleteCargoAjax(id) {

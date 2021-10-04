@@ -21,11 +21,6 @@
                             <label>Data Final</label>
                             <input type="text" class="form-control placeholder" autocomplete="off" asp-for="Data_Final" maxlength="10">
                         </div>
-
-                        <div class="col-md">
-                            <label>Usuarios</label>
-                            <select class="form-control" asp-for="IdUsuario" id="usuarios"></select>
-                        </div>
                     </div>
                 </div>
                 <div class="card-footer">
@@ -87,13 +82,13 @@
                     <div class="modal-body">
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Data Início</label>
-                                <input type="text" class="form-control placeholder" autocomplete="off" id="data-inicio-insert" maxlength="10">
+                                <label>Data Início<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control placeholder" onchange="OnChangeValidation(this)" autocomplete="off" id="data-inicio-insert" maxlength="10">
                             </div>
 
                             <div class="col-md">
-                                <label>Data Final</label>
-                                <input type="text" class="form-control placeholder" autocomplete="off" id="data-final-insert" maxlength="10">
+                                <label>Data Final<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control placeholder" onchange="OnChangeValidation(this)" autocomplete="off" id="data-final-insert" maxlength="10">
                             </div>
                         </div>
                     </div>
@@ -116,13 +111,13 @@
                         <input hidden id="id-update" />
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Data Início</label>
-                                <input type="date" class="form-control" autocomplete="off" id="data-inicio-update" placeholder="dd/MM/aaaa">
+                                <label>Data Início<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control placeholder" onchange="OnChangeValidation(this)" autocomplete="off" id="data-inicio-update" placeholder="dd/MM/aaaa">
                             </div>
 
                             <div class="col-md">
-                                <label>Data Final</label>
-                                <input type="date" class="form-control" autocomplete="off" id="data-final-update" placeholder="dd/MM/aaaa">
+                                <label>Data Final<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control placeholder" onchange="OnChangeValidation(this)" autocomplete="off" id="data-final-update" placeholder="dd/MM/aaaa">
                             </div>
                         </div>
                     </div>
@@ -162,20 +157,65 @@
         $('#data-final-update').val(dataFinal);
     }
 
+    function ValidateBeforeInsert() {
+        var model = {
+            Data_Inicio: $('#data-inicio-insert'),
+            Data_Final: $('#data-final-insert')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+    function ValidateBeforeUpdate() {
+        var model = {
+            Data_Inicio: $('#data-inicio-update'),
+            Data_Final: $('#data-final-update')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+
+    function OnChangeValidation(campo) {
+        if ($(campo).val() != "") {
+            $(campo).css("border-color", "")
+        }
+    }
+
     function InsertFeriasData() {
         var model = {
             Data_Inicio: $('#data-inicio-insert').val(),
             Data_Final: $('#data-final-insert').val(),
             Aprovado: 0
         }
-        AjaxHelper('POST', '/Ferias/CreateFerias', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Férias inseridas com Sucesso", "/Ferias/Index")
-            }
-            else {
-                configureSweetError('error');
-            }
-        })
+        if (ValidateBeforeInsert()) {
+            AjaxHelper('POST', '/Ferias/CreateFerias', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Férias inseridas com Sucesso", "/Ferias/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
     }
 
     function UpdateFeriasData() {
@@ -185,14 +225,17 @@
             Data_Final: $('#data-final-update').val()
         };
 
-        AjaxHelper('PUT', '/Ferias/UpdateFerias', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Férias alteradas com Sucesso", "/Ferias/Index")
-            }
-            else {
-                configureSweetError('error');
-            }
-        })
+        if (ValidateBeforeUpdate()) {
+            AjaxHelper('PUT', '/Ferias/UpdateFerias', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Férias alteradas com Sucesso", "/Ferias/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
+
     }
 
     function DeleteFeriasAjax(id) {

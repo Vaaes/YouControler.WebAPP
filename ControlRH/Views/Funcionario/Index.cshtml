@@ -5,7 +5,7 @@
 
 <div>
     <div>
-        <form asp-controller="Usuarios" asp-action="GetUsuario" method="get">
+        <form asp-controller="Funcionario" asp-action="GetFuncionario" method="get">
             <div class="card">
                 <div class="card-header">
                     Filtros
@@ -20,9 +20,9 @@
                             <label>Cargo</label>
                             <select class="form-control" asp-for="IdCargo">
                                 <option value="">-SELECIONE-</option>
-                                @foreach (var item in Model.Itens)
+                                @foreach (var item in Model.ItensCargoToselect)
                                 {
-                                    <option value="@item.Id">@item.Nome</option>
+                                    <option value="@item.ID">@item.Nome_Cargo</option>
                                 }
                             </select>
                         </div>
@@ -70,18 +70,18 @@
                 <tbody>
                     @foreach (var item in Model.Itens)
                     {
-                    <tr>
-                        <td>@item.Nome</td>
-                        <td>@item.CPF</td>
-                        <td>@item.IdCargo</td>
-                        <td>@item.Tipo</td>
-                        <td>@item.Email</td>
-                        <td>@item.Salario</td>
-                        <td class="td-th-icon-size nosort text-center">
-                            <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, @item.Nome, '@item.CPF', '@item.Tipo', '@item.Email', '@item.Salario', @item.IdCargo)" title="Editar cargo"><i class="fas fa-edit td-icon text-success"></i></a>
-                            <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteFuncionarioData(@item.Id, '@item.Nome')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>@item.Nome</td>
+                            <td>@item.CPF</td>
+                            <td>@item.IdCargo</td>
+                            <td>@item.Tipo</td>
+                            <td>@item.Email</td>
+                            <td>@item.Salario</td>
+                            <td class="td-th-icon-size nosort text-center">
+                                <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, '@item.Nome', '@item.CPF', '@item.Tipo', '@item.Email', '@item.Salario', @item.IdCargo)" title="Editar cargo"><i class="fas fa-edit td-icon text-success"></i></a>
+                                <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteFuncionarioData(@item.Id, '@item.Nome')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>
@@ -97,24 +97,24 @@
                     <div class="modal-body">
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Cargo</label>
-                                <select class="form-control" id="id-cargo-insert">
+                                <label>Cargo<span class="text-danger">*</span></label>
+                                <select class="form-control" onchange="OnChangeValidation(this)" id="id-cargo-insert">
                                     <option value="">-SELECIONE-</option>
-                                    @foreach (var item in Model.Itens)
+                                    @foreach (var item in Model.ItensCargoToselect)
                                     {
-                                        <option value="@item.Id">@item.Nome</option>
+                                        <option value="@item.ID">@item.Nome_Cargo</option>
                                     }
                                 </select>
                             </div>
                             <div class="col-md">
-                                <label>Nome</label>
-                                <input type="text" class="form-control" autocomplete="off" id="nome-funcionario-insert">
+                                <label>Nome<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" autocomplete="off" onchange="OnChangeValidation(this)" id="nome-funcionario-insert">
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>CPF</label>
-                                <input type="text" class="form-control" autocomplete="off" id="cpf-funcionario-insert">
+                                <label>CPF<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control cpf" onchange="OnChangeValidation(this)" autocomplete="off" id="cpf-funcionario-insert">
                             </div>
                             <div class="col-md">
                                 <label>Tipo</label>
@@ -124,11 +124,11 @@
                         <div class="row g-2">
                             <div class="col-md">
                                 <label>Email</label>
-                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="email-funcionario-insert">
+                                <input type="text" class="form-control" autocomplete="off" id="email-funcionario-insert">
                             </div>
                             <div class="col-md">
-                                <label>Salario</label>
-                                <input type="text" class="form-control" autocomplete="off" id="salario-funcionario-insert">
+                                <label>Salario<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control money" onchange="OnChangeValidation(this)" autocomplete="off" id="salario-funcionario-insert">
                             </div>
                         </div>
                     </div>
@@ -151,24 +151,24 @@
                         <input hidden id="id-update" />
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Cargo</label>
+                                <label>Cargo<span class="text-danger">*</span></label>
                                 <select class="form-control" id="id-cargo-update">
                                     <option value="">-SELECIONE-</option>
-                                    @foreach (var item in Model.Itens)
+                                    @foreach (var item in Model.ItensCargoToselect)
                                     {
-                                        <option value="@item.Id">@item.Nome</option>
+                                        <option value="@item.ID">@item.Nome_Cargo</option>
                                     }
                                 </select>
                             </div>
                             <div class="col-md">
-                                <label>Nome</label>
-                                <input type="text" class="form-control" autocomplete="off" id="nome-funcionario-update">
+                                <label>Nome<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-funcionario-update">
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>CPF</label>
-                                <input type="text" class="form-control" autocomplete="off" id="cpf-funcionario-update">
+                                <label>CPF<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control cpf" onchange="OnChangeValidation(this)" autocomplete="off" id="cpf-funcionario-update">
                             </div>
                             <div class="col-md">
                                 <label>Tipo</label>
@@ -178,17 +178,17 @@
                         <div class="row g-2">
                             <div class="col-md">
                                 <label>Email</label>
-                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="email-funcionario-update">
+                                <input type="text" class="form-control placeholder" autocomplete="off" id="email-funcionario-update">
                             </div>
                             <div class="col-md">
-                                <label>Salario</label>
-                                <input type="text" class="form-control" autocomplete="off" id="salario-funcionario-update">
+                                <label>Salario<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control money" onchange="OnChangeValidation(this)" autocomplete="off" id="salario-funcionario-update">
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateUsuarioData();">Salvar</button>
+                        <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateFuncionarioData();">Salvar</button>
                     </div>
                 </div>
             </div>
@@ -203,6 +203,9 @@
         $("#btn-insert").hide();
         $(".btn-edit").hide();
         $(".btn-excluir").hide();
+
+        $('.cpf').mask('000.000.000-00', { reverse: true });
+        $('.money').mask('#.##0,00', { reverse: true });
 
         HasPermission(4);
     });
@@ -222,6 +225,54 @@
         $('#id-cargo-update').val(idcargo);
     }
 
+    function ValidateBeforeInsert() {
+        var model = {
+            Nome: $('#nome-funcionario-insert'),
+            CPF: $('#cpf-funcionario-insert'),
+            Salario: $('#salario-funcionario-insert'),
+            IdCargo: $('#id-cargo-insert')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            console.log(item);
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+    function ValidateBeforeUpdate() {
+        var model = {
+            Nome: $('#nome-funcionario-update'),
+            CPF: $('#cpf-funcionario-update'),
+            Salario: $('#salario-funcionario-update'),
+            IdCargo: $('#id-cargo-update')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            console.log(item);
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+    function OnChangeValidation(campo) {
+        if ($(campo).val() != "") {
+            $(campo).css("border-color", "")
+        }
+    }
+
     function InsertUsuarioData() {
         var model = {
             Nome: $('#nome-funcionario-insert').val(),
@@ -232,17 +283,19 @@
             IdCargo: $('#id-cargo-insert').val()
         }
 
-        AjaxHelper('POST', '/Usuarios/CreateFuncionario', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Usuário inserido com Sucesso", "/Funcionario/Index")
-            }
-            else {
-                configureSweetError('error');
-            }
-        })
+        if (ValidateBeforeInsert()) {
+            AjaxHelper('POST', '/Funcionario/CreateFuncionario', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Funcionario inserido com Sucesso", "/Funcionario/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
     }
 
-    function UpdateUsuarioData() {
+    function UpdateFuncionarioData() {
         var model = {
             Id: $("#id-update").val(),
             Nome: $('#nome-funcionario-update').val(),
@@ -253,23 +306,25 @@
             IdCargo: $('#id-cargo-update').val()
         };
 
-        AjaxHelper('PUT', '/Funcionario/UpdateFuncionario', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Usuário alterado com Sucesso", "/Funcionario/Index")
-            }
-            else {
-                configureSweetError('error');
-            }
-        })
+        if (ValidateBeforeUpdate()) {
+            AjaxHelper('PUT', '/Funcionario/UpdateFuncionario', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Funcionario alterado com Sucesso", "/Funcionario/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
     }
 
-    function DeleteUsuarioAjax(id) {
+    function DeleteFuncionarioAjax(id) {
         var model = {
             Id: id,
         };
         AjaxHelper('DELETE', '/Funcionario/DeleteFuncionario', model, function (result) {
             if (result) {
-                configureSweetSuccess("Usuario deletado com sucesso!", "/Funcionario/Index")
+                configureSweetSuccess("Funcionario deletado com sucesso!", "/Funcionario/Index")
             }
             else {
                 configureSweetError('error');
@@ -277,7 +332,7 @@
         })
     }
 
-    function DeleteUsuarioData(id, funcionario) {
+    function DeleteFuncionarioData(id, funcionario) {
         Swal.fire({
             title: funcionario,
             text: "Tem certeza que deseja remover o funcionario: " + funcionario + " ?",
@@ -288,7 +343,7 @@
             confirmButtonText: 'Sim, deletar!'
         }).then((result) => {
             if (result.isConfirmed) {
-                DeleteUsuarioAjax(id)
+                DeleteFuncionarioAjax(id)
             }
         })
     }

@@ -28,13 +28,13 @@
                         </div>
                         <div class="col-md">
                             <label>CPF</label>
-                            <input type="text" class="form-control" asp-for="CPF" autocomplete="off" />
+                            <input type="text" class="form-control cpf" asp-for="CPF" autocomplete="off" />
                         </div>
                     </div>
                     <div class="row g-2">
                         <div class="col-md">
                             <label>CEP</label>
-                            <input type="text" class="form-control" asp-for="CEP" autocomplete="off" />
+                            <input type="text" class="form-control cep" asp-for="CEP" autocomplete="off" />
                         </div>
                         <div class="col-md">
                             <label>Email</label>
@@ -101,7 +101,7 @@
                         <div class="row g-2">
                             <div class="col-md">
                                 <label>Perfil</label>
-                                <select class="form-control" id="id-perfil-insert">
+                                <select class="form-control" id="id-perfil-insert" onchange="OnChangeValidation(this)">
                                     <option value="">-SELECIONE-</option>
                                     @foreach (var item in Model.ItensToPerfilSelect)
                                     {
@@ -110,46 +110,46 @@
                                 </select>
                             </div>
                             <div class="col-md">
-                                <label>Usuario <span class="badge badge-dark" style="background-color: #401EDF;">(senha padrão: puc@2021)</span></label>
-                                <input type="text" class="form-control" autocomplete="off" id="login-usuario-insert">
+                                <label>Usuario<span class="text-danger">* </span> <span class="badge badge-dark" style="background-color: #401EDF;">senha padrão: puc@2021</span></label>
+                                <input type="text" class="form-control" autocomplete="off" onchange="OnChangeValidation(this)" id="login-usuario-insert">
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Nome</label>
-                                <input type="text" class="form-control" autocomplete="off" id="nome-usuario-insert">
+                                <label>Nome<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" autocomplete="off" onchange="OnChangeValidation(this)" id="nome-usuario-insert">
                             </div>
                             <div class="col-md">
-                                <label>CPF</label>
-                                <input type="text" class="form-control" autocomplete="off" id="cpf-usuario-insert">
+                                <label>CPF<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control cpf" autocomplete="off" onchange="OnChangeValidation(this)" id="cpf-usuario-insert">
                             </div>
                         </div>
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Data de Nascimento</label>
-                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="nascimento-usuario-insert">
+                                <label>Data de Nascimento<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control placeholder" maxlength="10" onchange="OnChangeValidation(this)" autocomplete="off" id="nascimento-usuario-insert">
                             </div>
                             <div class="col-md">
-                                <label>CEP</label>
-                                <input type="text" class="form-control" autocomplete="off" id="cep-usuario-insert">
+                                <label>CEP<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control cep" onchange="OnChangeValidation(this)" autocomplete="off" id="cep-usuario-insert">
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Telefone Celular</label>
-                                <input type="text" class="form-control" autocomplete="off" id="celular-usuario-insert">
+                                <label>Telefone Celular<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control sp_celphones" onchange="OnChangeValidation(this)" autocomplete="off" id="celular-usuario-insert">
                             </div>
                             <div class="col-md">
                                 <label>Telefone Residencial</label>
-                                <input type="text" class="form-control" autocomplete="off" id="residencial-usuario-insert">
+                                <input type="text" class="form-control sp_celphones" autocomplete="off" id="residencial-usuario-insert">
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Email</label>
-                                <input type="text" class="form-control" autocomplete="off" id="email-usuario-insert">
+                                <label>Email<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="email-usuario-insert">
                             </div>
                         </div>
                     </div>
@@ -172,8 +172,8 @@
                         <input id="id-update" hidden />
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Perfil</label>
-                                <select class="form-control" id="id-perfil-update">
+                                <label>Perfil<span class="text-danger">*</span></label>
+                                <select class="form-control" onchange="OnChangeValidation(this)" id="id-perfil-update">
                                     <option value="">-SELECIONE-</option>
                                     @foreach (var item in Model.ItensToPerfilSelect)
                                     {
@@ -182,48 +182,48 @@
                                 </select>
                             </div>
                             <div class="col-md">
-                                <label>Usuario</label>
-                                <input type="text" class="form-control" autocomplete="off" id="login-usuario-update">
+                                <label>Usuario<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="login-usuario-update">
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Nome</label>
-                                <input type="text" class="form-control" autocomplete="off" id="nome-usuario-update">
+                                <label>Nome<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-usuario-update">
                             </div>
                             <div class="col-md">
-                                <label>CPF</label>
-                                <input type="text" class="form-control" autocomplete="off" id="cpf-usuario-update">
-                            </div>
-                        </div>
-
-                        <div class="row g-2">
-                            <div class="col-md">
-                                <label>Data de Nascimento</label>
-                                <input type="text" class="form-control placeholder" maxlength="10" autocomplete="off" id="nascimento-usuario-update">
-                            </div>
-                            <div class="col-md">
-                                <label>CEP</label>
-                                <input type="text" class="form-control" autocomplete="off" id="cep-usuario-update">
+                                <label>CPF<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control cpf" onchange="OnChangeValidation(this)" autocomplete="off" id="cpf-usuario-update">
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Telefone Celular</label>
-                                <input type="text" class="form-control" autocomplete="off" id="celular-usuario-update">
+                                <label>Data de Nascimento<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control placeholder" onchange="OnChangeValidation(this)" maxlength="10" autocomplete="off" id="nascimento-usuario-update">
+                            </div>
+                            <div class="col-md">
+                                <label>CEP<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control cep" onchange="OnChangeValidation(this)" autocomplete="off" id="cep-usuario-update">
+                            </div>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Telefone Celular<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control sp_celphones" onchange="OnChangeValidation(this)" autocomplete="off" id="celular-usuario-update">
                             </div>
                             <div class="col-md">
                                 <label>Telefone Residencial</label>
-                                <input type="text" class="form-control" autocomplete="off" id="residencial-usuario-update">
+                                <input type="text" class="form-control sp_celphones" autocomplete="off" id="residencial-usuario-update">
                             </div>
                         </div>
 
                         <div class="row g-2">
                             <div class="col-md">
-                                <label>Email</label>
-                                <input type="text" class="form-control" autocomplete="off" id="email-usuario-update">
+                                <label>Email<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="email-usuario-update">
                             </div>
                         </div>
                     </div>
@@ -244,10 +244,24 @@
         $(".btn-edit").hide();
         $(".btn-excluir").hide();
 
+        $('.cpf').mask('000.000.000-00', { reverse: true });
+        $('.cep').mask('00000-000');
         $('.placeholder').mask("00/00/0000", { placeholder: "__/__/____" });
+        var SPMaskBehavior = function (val) {
+            return val.replace(/\D/g, '').length === 11 ? '(00) 00000-0000' : '(00) 0000-00009';
+        },
+            spOptions = {
+                onKeyPress: function (val, e, field, options) {
+                    field.mask(SPMaskBehavior.apply({}, arguments), options);
+                }
+            };
+
+        $('.sp_celphones').mask(SPMaskBehavior, spOptions);
 
         HasPermission(1);
     });
+
+
 
     $("#btn-insert").click(function () {
         $('#modal-insert').modal('show');
@@ -267,6 +281,39 @@
         $('#login-usuario-update').val(Login);
     }
 
+
+    function ValidateBeforeInsert() {
+        var model = {
+            IdNivelAcesso: $('#id-perfil-insert'),
+            Nome: $('#nome-usuario-insert'),
+            CPF: $('#cpf-usuario-insert'),
+            Nascimento: $('#nascimento-usuario-insert'),
+            Telefone_Celular: $('#celular-usuario-insert'),
+            Email: $('#email-usuario-insert'),
+            CEP: $('#cep-usuario-insert'),
+            Login: $('#login-usuario-insert')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+
+    function OnChangeValidation(campo) {
+        if ($(campo).val() != "") {
+            $(campo).css("border-color", "")
+        }
+    }
+
+
     function InsertUsuarioData() {
         var model = {
             IdNivelAcesso: $('#id-perfil-insert').val(),
@@ -280,14 +327,40 @@
             Login: $('#login-usuario-insert').val()
         }
 
-        AjaxHelper('POST', '/Usuarios/CreateUsuario', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Usuário inserido com Sucesso", "/Usuarios/Index")
-            }
-            else {
-                configureSweetError('error');
+        if (ValidateBeforeInsert()) {
+            AjaxHelper('POST', '/Usuarios/CreateUsuario', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Usuário inserido com Sucesso", "/Usuarios/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
+    }
+
+    function ValidateBeforeUpdate() {
+        var model = {
+            IdNivelAcesso: $('#id-perfil-update'),
+            Nome: $('#nome-usuario-update'),
+            CPF: $('#cpf-usuario-update'),
+            Nascimento: $('#nascimento-usuario-update'),
+            Telefone_Celular: $('#celular-usuario-update'),
+            Email: $('#email-usuario-update'),
+            CEP: $('#cep-usuario-update'),
+            Login: $('#login-usuario-update'),
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
             }
         })
+
+        return valida;
     }
 
     function UpdateUsuarioData() {
@@ -304,14 +377,16 @@
             Login: $('#login-usuario-update').val(),
         };
 
-        AjaxHelper('PUT', '/Usuarios/UpdateUsuario', model, function (result) {
-            if (result) {
-                configureSweetSuccess("Usuário alterado com Sucesso", "/Usuarios/Index")
-            }
-            else {
-                configureSweetError('error');
-            }
-        })
+        if (ValidateBeforeUpdate()) {
+            AjaxHelper('PUT', '/Usuarios/UpdateUsuario', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Usuário alterado com Sucesso", "/Usuarios/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
     }
 
     function DeleteUsuarioAjax(id) {

@@ -12,6 +12,7 @@ namespace ControlRH.Controllers
     public class FuncionarioController : Controller
     {
         FuncionarioRepository _funcionarioRepository = new FuncionarioRepository();
+        CargoRepository _cargoRepository = new CargoRepository();
         public async Task<IActionResult> Index()
         {
             try
@@ -21,7 +22,7 @@ namespace ControlRH.Controllers
                     return RedirectToAction("LogOut", "Home");
 
                 model.Itens = await _funcionarioRepository.Get(HttpContext.Session.GetString("SessionToken"));
-
+                model.ItensCargoToselect = await _cargoRepository.Get(HttpContext.Session.GetString("SessionToken"));
 
                 return View(model);
             }
@@ -41,6 +42,7 @@ namespace ControlRH.Controllers
                     return RedirectToAction("LogOut", "Home");
 
                 model.Itens = await _funcionarioRepository.GetUsuarioByParam(HttpContext.Session.GetString("SessionToken"), funcionario.Id, funcionario.Nome, funcionario.CPF, funcionario.Tipo, funcionario.Email, funcionario.Salario, funcionario.IdCargo);
+                model.ItensCargoToselect = await _cargoRepository.Get(HttpContext.Session.GetString("SessionToken"));
 
                 return View("Index", model);
             }

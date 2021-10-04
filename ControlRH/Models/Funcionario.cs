@@ -26,5 +26,6 @@ namespace ControlRH.Models
         public string Salario { get; set; }
         public int? IdCargo { get; set; }
         public IEnumerable<Funcionario> Itens { get; set; }
+        public IEnumerable<Cargo> ItensCargoToselect { get; set; }
     }
 }

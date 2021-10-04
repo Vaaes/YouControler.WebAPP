@@ -402,7 +402,6 @@
                     url: "/Perfil/ReturnAllPermissionsByProfileId",
                     data: model,
                     success: function (result) {
-                        console.log(result)
                         $.each(result, function (i, item) {
                             if (item.criar == 1) { $('#td-update-update-' + item.idMenu + '-C').prop('checked', true); }
                             if (item.ler == 1) { $('#td-update-update-' + item.idMenu + '-R').prop('checked', true); }
@@ -424,7 +423,6 @@
 
     function AlterarDadosRetornarPerfil() {
         var id = $('#input-id-permissao-menus-update').val()
-        console.log("Id PErfil: " + id)
 
         function AlterarDadosMenu(idMenu, IdPerfil, Acesso, C, R, U, D) {
             var model = {
