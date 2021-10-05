@@ -39,6 +39,20 @@ namespace ControlRH.Repository
             return ferias;
         }
 
+        public async Task<IEnumerable<Usuario>> GetVerificaPerfil(string token, int IdNivelAcesso)
+        {
+            IEnumerable<Usuario> ferias = new List<Usuario>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync($"/Usuario/GetVerificaPerfil?IdNivelAcesso={IdNivelAcesso}");
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                ferias = JsonConvert.DeserializeObject<IEnumerable<Usuario>>(results);
+            }
+            return ferias;
+        }
+
         public bool Create(Usuario model, string token)
         {
             HttpClient client = _api.Initial(token);

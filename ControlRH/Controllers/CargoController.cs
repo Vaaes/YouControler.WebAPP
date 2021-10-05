@@ -3,6 +3,7 @@ using ControlRH.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ControlRH.Controllers
@@ -10,7 +11,7 @@ namespace ControlRH.Controllers
     public class CargoController : Controller
     {
         CargoRepository _cargoRepository = new CargoRepository();
-
+        FuncionarioRepository _funcionarioRepository = new FuncionarioRepository();
         public async Task<IActionResult> Index()
         {
             try
@@ -41,6 +42,26 @@ namespace ControlRH.Controllers
                 model.ItensToSelect = await _cargoRepository.Get(HttpContext.Session.GetString("SessionToken"));
 
                 return View("Index", model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerificaFuncionarioByIdCargo(int IdCargo)
+        {
+            try
+            {
+                var model = new FuncionarioViewModel();
+                if (HttpContext.Session.GetString("SessionName") == null)
+                    return RedirectToAction("LogOut", "Home");
+
+                model.Itens = await _funcionarioRepository.VerificaFuncionarioByIdCargo(HttpContext.Session.GetString("SessionToken"), IdCargo);
+                if (model.Itens.Count() > 0)
+                    return Ok(false);
+                return Ok(true); 
             }
             catch (Exception ex)
             {

@@ -41,6 +41,20 @@ namespace ControlRH.Repository
             return ferias;
         }
 
+        public async Task<IEnumerable<Funcionario>> VerificaFuncionarioByIdCargo(string token, int? IdCargo = null)
+        {
+            IEnumerable<Funcionario> ferias = new List<Funcionario>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync($"/Funcionario/GetFuncionarioByParam?IdCargo={IdCargo}");
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                ferias = JsonConvert.DeserializeObject<IEnumerable<Funcionario>>(results);
+            }
+            return ferias;
+        }
+
         public bool Create(Funcionario model, string token)
         {
             HttpClient client = _api.Initial(token);

@@ -14,8 +14,8 @@
                     <div class="row g-2">
                         <div class="col-md">
                             <label>Nome do Cargo</label>
-                            <select class="form-control" asp-for="Nome_Cargo">
-                                <option value="">-- SELECIONE --</option>
+                            <select class="form-control" id="" asp-for="Nome_Cargo">
+                                <option value="">-- SELECIONAR --</option>
                                 @foreach (var item in Model.ItensToSelect)
                                 {
                                     <option value="@item.Nome_Cargo">@item.Nome_Cargo</option>
@@ -51,7 +51,7 @@
                         <td>@item.Descricao_Cargo</td>
                         <td class="td-th-icon-size nosort text-center">
                             <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.ID,'@item.Nome_Cargo', '@item.Descricao_Cargo')" title="Editar cargo"><i class="fas fa-edit td-icon text-success"></i></a>
-                            <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteCargoData(@item.ID, '@item.Nome_Cargo')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
+                            <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="VerificaCargoPerfil(@item.ID, '@item.Nome_Cargo')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
                         </td>
                     </tr>
                 }
@@ -137,6 +137,7 @@
     $("#btn-insert").click(function () {
         $('#modal-insert').modal('show');
     });
+
 
     function ValidateBeforeInsert() {
         var model = {
@@ -255,4 +256,28 @@
             }
         })
     }
+
+    function VerificaCargoPerfil(id, role) {
+        var model = {
+            IdCargo: id,
+        };
+
+        AjaxHelper('GET', '/Cargo/VerificaFuncionarioByIdCargo', model, function (result) {
+            if (result) {
+                DeleteCargoData(id, role)
+            }
+            else {
+                Swal.fire({
+                    title: role,
+                    text: "O Cargo: " + role + " está vinculado a algum funcionário, portanto não é possivel deleta-lo!",
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#dc3545',
+                    confirmButtonText: 'Okay!'
+                })
+            }
+        })
+    }
+
 </script>

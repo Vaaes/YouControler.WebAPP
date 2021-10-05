@@ -5,7 +5,7 @@
 
 <div>
     <div>
-        <form asp-controller="Usuarios" asp-action="GetUsuario" method="get">
+        <form id="form" asp-controller="Usuarios" asp-action="GetUsuario" method="get">
             <div class="card">
                 <div class="card-header">
                     Filtros
@@ -19,7 +19,7 @@
                         <div class="col-md">
                             <label>Perfil</label>
                             <select class="form-control" asp-for="IdNivelAcesso">
-                                <option value="">-SELECIONE-</option>
+                                <option value="">-- SELECIONAR --</option>
                                 @foreach (var item in Model.ItensToPerfilSelect)
                                 {
                                     <option value="@item.Id">@item.Role</option>
@@ -102,7 +102,7 @@
                             <div class="col-md">
                                 <label>Perfil</label>
                                 <select class="form-control" id="id-perfil-insert" onchange="OnChangeValidation(this)">
-                                    <option value="">-SELECIONE-</option>
+                                    <option value="">-- SELECIONAR --</option>
                                     @foreach (var item in Model.ItensToPerfilSelect)
                                     {
                                         <option value="@item.Id">@item.Role</option>
@@ -174,7 +174,7 @@
                             <div class="col-md">
                                 <label>Perfil<span class="text-danger">*</span></label>
                                 <select class="form-control" onchange="OnChangeValidation(this)" id="id-perfil-update">
-                                    <option value="">-SELECIONE-</option>
+                                    <option value="">-- SELECIONAR --</option>
                                     @foreach (var item in Model.ItensToPerfilSelect)
                                     {
                                         <option value="@item.Id">@item.Role</option>
@@ -261,11 +261,13 @@
         HasPermission(1);
     });
 
-
-
     $("#btn-insert").click(function () {
         $('#modal-insert').modal('show');
     });
+
+    function ResetForm() {
+        document.getElementById("form").reset();
+    }
 
     function OpenUpdateModal(Id, IdNivelAcesso, Nome, CPF, Nascimento, Telefone_Celular, Telefone_Residencial, Email, CEP, Login) {
         $('#modal-update').modal('show');

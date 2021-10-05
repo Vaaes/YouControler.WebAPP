@@ -28,6 +28,20 @@ namespace ControlRH.Repository
             return Depar;
         }
 
+        public async Task<IEnumerable<Departamento>> GetCargoByGestorDepartamento(string token, string NomeGerente)
+        {
+            IEnumerable<Departamento> ferias = new List<Departamento>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync($"/Departamento/GetCargoByGestorDepartamento?NomeGerente={NomeGerente}");
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                ferias = JsonConvert.DeserializeObject<IEnumerable<Departamento>>(results);
+            }
+            return ferias;
+        }
+
         public bool Create(Departamento model, string token)
         {
             HttpClient client = _api.Initial(token);
@@ -56,8 +70,6 @@ namespace ControlRH.Repository
                 return true;
             }
             return false;
-
-
         }
 
         public async Task<bool> Delete(int id, string token)

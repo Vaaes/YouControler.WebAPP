@@ -13,6 +13,7 @@ namespace ControlRH.Controllers
     {
         FuncionarioRepository _funcionarioRepository = new FuncionarioRepository();
         CargoRepository _cargoRepository = new CargoRepository();
+        DepartamentoRepository _departamentoRepository = new DepartamentoRepository();
         public async Task<IActionResult> Index()
         {
             try
@@ -45,6 +46,26 @@ namespace ControlRH.Controllers
                 model.ItensCargoToselect = await _cargoRepository.Get(HttpContext.Session.GetString("SessionToken"));
 
                 return View("Index", model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> VerificaDepartamentoByGerenteNome(string GerenteNome)
+        {
+            try
+            {
+                var model = new DepartamentoViewModel();
+                if (HttpContext.Session.GetString("SessionName") == null)
+                    return RedirectToAction("LogOut", "Home");
+
+                model.Itens = await _departamentoRepository.GetCargoByGestorDepartamento(HttpContext.Session.GetString("SessionToken"), GerenteNome);
+                if (model.Itens.Count() > 0)
+                    return Ok(false);
+                return Ok(true);
             }
             catch (Exception ex)
             {

@@ -14,6 +14,7 @@ namespace ControlRH.Controllers
         PerfilRepository _perfilRepository = new PerfilRepository();
         NivelAcessoRespository _nivelAcessoRepository = new NivelAcessoRespository();
         PermissoesRepository _permissoesRepository = new PermissoesRepository();
+        UsuarioRepository _usuarioRepository = new UsuarioRepository();
         public async Task<IActionResult> Index()
         {
             try
@@ -46,6 +47,26 @@ namespace ControlRH.Controllers
                 model.itensReturnToTable = await _perfilRepository.GetById(HttpContext.Session.GetString("SessionToken"), perfil.Id);
 
                 return View("Index", model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ListVerificaAcessoPerfil(int IdNivelAcesso)
+        {
+            try
+            {
+                var model = new UsuarioViewModel();
+                if (HttpContext.Session.GetString("SessionName") == null)
+                    return RedirectToAction("LogOut");
+
+                model.Itens = await _usuarioRepository.GetVerificaPerfil(HttpContext.Session.GetString("SessionToken"), IdNivelAcesso);
+                if (model.Itens.Count() > 0)
+                    return Ok(false);
+                return Ok(true);
             }
             catch (Exception ex)
             {

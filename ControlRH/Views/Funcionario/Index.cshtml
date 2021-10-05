@@ -19,7 +19,7 @@
                         <div class="col-md">
                             <label>Cargo</label>
                             <select class="form-control" asp-for="IdCargo">
-                                <option value="">-SELECIONE-</option>
+                                <option value="">-- SELECIONAR --</option>
                                 @foreach (var item in Model.ItensCargoToselect)
                                 {
                                     <option value="@item.ID">@item.Nome_Cargo</option>
@@ -60,7 +60,6 @@
                     <tr>
                         <th>Nome</th>
                         <th>CPF</th>
-                        <th>Cargo</th>
                         <th>Tipo</th>
                         <th>Email</th>
                         <th>Salario</th>
@@ -73,13 +72,12 @@
                         <tr>
                             <td>@item.Nome</td>
                             <td>@item.CPF</td>
-                            <td>@item.IdCargo</td>
                             <td>@item.Tipo</td>
                             <td>@item.Email</td>
                             <td>@item.Salario</td>
                             <td class="td-th-icon-size nosort text-center">
                                 <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, '@item.Nome', '@item.CPF', '@item.Tipo', '@item.Email', '@item.Salario', @item.IdCargo)" title="Editar cargo"><i class="fas fa-edit td-icon text-success"></i></a>
-                                <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteFuncionarioData(@item.Id, '@item.Nome')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
+                                <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="VerificaUsuarioPerfil(@item.Id, '@item.Nome')" title="Excluir cargo"><i class="fas fa-trash td-icon text-danger"></i></a>
                             </td>
                         </tr>
                     }
@@ -99,7 +97,7 @@
                             <div class="col-md">
                                 <label>Cargo<span class="text-danger">*</span></label>
                                 <select class="form-control" onchange="OnChangeValidation(this)" id="id-cargo-insert">
-                                    <option value="">-SELECIONE-</option>
+                                    <option value="">-- SELECIONAR --</option>
                                     @foreach (var item in Model.ItensCargoToselect)
                                     {
                                         <option value="@item.ID">@item.Nome_Cargo</option>
@@ -153,7 +151,7 @@
                             <div class="col-md">
                                 <label>Cargo<span class="text-danger">*</span></label>
                                 <select class="form-control" id="id-cargo-update">
-                                    <option value="">-SELECIONE-</option>
+                                    <option value="">-- SELECIONAR --</option>
                                     @foreach (var item in Model.ItensCargoToselect)
                                     {
                                         <option value="@item.ID">@item.Nome_Cargo</option>
@@ -344,6 +342,29 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 DeleteFuncionarioAjax(id)
+            }
+        })
+    }
+
+    function VerificaUsuarioPerfil(id, funcionario) {
+        var model = {
+            GerenteNome: funcionario,
+        };
+
+        AjaxHelper('GET', '/Funcionario/VerificaDepartamentoByGerenteNome', model, function (result) {
+            if (result) {
+                DeleteFuncionarioData(id, funcionario)
+            }
+            else {
+                Swal.fire({
+                    title: funcionario,
+                    text: "O Funcionário: " + funcionario + " está vinculado a algum departamento, portanto não é possivel deleta-lo!",
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#dc3545',
+                    confirmButtonText: 'Okay!'
+                })
             }
         })
     }

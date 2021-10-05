@@ -34,6 +34,7 @@ namespace ControlRH.Controllers
             }
             else
             {
+                TempData[BaseController.mensagemErro] = "Login ou Senha incorreto!";
                 return RedirectToAction("Index");
             } 
         }

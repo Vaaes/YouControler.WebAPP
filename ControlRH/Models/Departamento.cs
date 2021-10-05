@@ -23,7 +23,7 @@ namespace ControlRH.Models
         public IEnumerable<Departamento> Itens { get; set; }
         public IEnumerable<Departamento> itensReturnToTable { get; set; }
         public IEnumerable<Departamento> itensReturnToSelect { get; set; }
-        public IEnumerable<Colaborador> GestorReturnSelect { get; set; }
+        public IEnumerable<Funcionario> GestorReturnSelect { get; set; }
 
     }
 }

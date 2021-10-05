@@ -47,7 +47,7 @@
                     <td class="td-th-icon-size nosort text-center">
                         <a onclick="OpenModalMenusAndPermissions(@item.Id, '@item.Role')" data-toggle="tooltip" data-placement="top" title="Editar Permissões"><i class="fas fa-network-wired td-icon text-success"></i></a>
                         <a class="btn-edit" onclick="OpenEditPerfilModal(@item.Id, '@item.Role')"><i class="fas fa-edit td-icon text-warning" data-toggle="tooltip" data-placement="top" title="Editar um Perfil"></i></a>
-                        <a class="btn-excluir" onclick="Excluir(@item.Id, '@item.Role')" data-toggle="tooltip" data-placement="top" title="Excluir um perfil"><i class="fas fa-trash td-icon text-danger"></i></a>
+                        <a class="btn-excluir" onclick="VerificaUsuarioPerfil(@item.Id, '@item.Role')" data-toggle="tooltip" data-placement="top" title="Excluir um perfil"><i class="fas fa-trash td-icon text-danger"></i></a>
                     </td>
                 </tr>
             }
@@ -111,12 +111,12 @@
         </div>
     </div>
 
-    <div class="modal" id="modal-update-menus-permissoes">
+    <div data-backdrop="static" class="modal fade" id="modal-update-menus-permissoes">
         <div class="modal-dialog modal-dialog-centered modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Inserir</h4>
-                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <button type="button" class="close" id="close-modal-perfil-menu" data-dismiss="modal">&times;</button>
                 </div>
                 <div class="modal-body">
                     <label class="form-label">Nome do Perfil: </label>
@@ -142,7 +142,7 @@
                     </table>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-danger" id="btn-alterar-menus-permissoes-cancelar" data-dismiss="modal">Cancelar</button>
                     <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="AlterarDadosRetornarPerfil();">Salvar</button>
                 </div>
             </div>
@@ -171,12 +171,19 @@
         $("#btn-salvar-permissoes").hide();
         $("#btn-salvar-perfil").show();
         $('#btn-salvar-menus').prop('disabled', true);
+        $('#input-role-permissao-menus-update').prop('disabled', true)
     });
-
-
 
     $("#btn-insert").click(function () {
         $('#modal-insert-perfil').modal('show');
+    });
+
+    $("#btn-alterar-menus-permissoes-cancelar").click(function () {
+        location.href = '/Perfil/Index';
+    });
+
+    $("#close-modal-perfil-menu").click(function () {
+        location.href = '/Perfil/Index';
     });
 
     function IsChecked() {
@@ -472,6 +479,30 @@
                 }
             })
             configureSweetSuccess('Perfil Alterado com sucesso!', '/Perfil/Index')
+        })
+    }
+
+
+    function VerificaUsuarioPerfil(IdNivelAcesso, role) {
+        var model = {
+            IdNivelAcesso: IdNivelAcesso,
+        };
+
+        AjaxHelper('GET', '/Perfil/ListVerificaAcessoPerfil', model, function (result) {
+            if (result) {
+                Excluir(IdNivelAcesso, role)
+            }
+            else {
+                Swal.fire({
+                    title: role,
+                    text: "O perfil: " + role + " está vinculado a algum usuário, portanto não é possivel deleta-lo!",
+                    icon: 'warning',
+                    showCancelButton: false,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#dc3545',
+                    confirmButtonText: 'Okay!'
+                })
+            }
         })
     }
 
