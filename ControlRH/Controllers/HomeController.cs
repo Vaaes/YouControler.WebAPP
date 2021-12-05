@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ControlRH.Controllers
@@ -12,6 +13,7 @@ namespace ControlRH.Controllers
     {
         BaseController _base = new BaseController();
         LogInRepository _login = new LogInRepository();
+        UsuarioRepository _usuarioRepository = new UsuarioRepository();
         public HomeController()
         {
         }
@@ -44,8 +46,57 @@ namespace ControlRH.Controllers
 
         public async Task<IActionResult> HasPermissionAllowed(int IdMenu)
         {
-            var access = await _login.HasPermission(HttpContext.Session.GetString("SessionToken"), HttpContext.Session.GetInt32("SessionIdNivelAcesso"), IdMenu);    
-            return Ok(access);
+            try
+            {
+                var access = await _login.HasPermission(HttpContext.Session.GetString("SessionToken"), HttpContext.Session.GetInt32("SessionIdNivelAcesso"), IdMenu);
+                return Ok(access);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<IActionResult> VerifyIfItsDefaultPassword()
+        {
+            try
+            {
+                var model = new UsuarioViewModel();
+                if (HttpContext.Session.GetString("SessionName") == null)
+                    return RedirectToAction("LogOut", "Home");
+
+                model.Itens = await _usuarioRepository.GetVerificaSenha(HttpContext.Session.GetString("SessionToken"), HttpContext.Session.GetInt32("SessionId"));
+
+                if (model.Itens.Count() >= 1)
+                    return Ok(true);
+                return Ok(false);
+            }
+            catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IActionResult ChangePassword(string password)
+        {
+            try
+            {
+                var model = new Usuario();
+                if (HttpContext.Session.GetString("SessionName") == null)
+                    return RedirectToAction("LogOut", "Home");
+
+                model.Senha = password;
+                model.Id = (int)HttpContext.Session.GetInt32("SessionId");
+                var response = _usuarioRepository.UpdatePassword(model, HttpContext.Session.GetString("SessionToken"));
+
+                if (!response)
+                    return Ok(false);
+                return Ok(true);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public IActionResult Privacy()

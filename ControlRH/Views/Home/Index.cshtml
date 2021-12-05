@@ -5,6 +5,67 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div>
-    <canvas id="myChart" width="400" height="400"></canvas>
+<div class="modal" id="modal-update-pass">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Alterar</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="row g-2">
+                    <div class="col-md">
+                        <label>Nova senha<span class="text-danger">*</span></label>
+                        <input type="password" class="form-control placeholder" onchange="OnChangeValidation(this)" id="pass">
+                    </div>
+                </div>
+                <div class="row g-2">
+                    <div class="col-md">
+                        <label>Confirmar senha<span class="text-danger">*</span></label>
+                        <input type="password" class="form-control placeholder" onchange="OnChangeValidation(this)" id="confirma-pass">
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Alterar depois</button>
+                <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="updatePassword();">Salvar</button>
+            </div>
+        </div>
+    </div>
 </div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        VerifyIfItsDefaultPassword();
+    });
+
+    function VerifyIfItsDefaultPassword() {
+        AjaxHelper('GET', '/Home/VerifyIfItsDefaultPassword', null, function (result) {
+            if (result) {
+                $('#modal-update-pass').modal('show');
+            }
+        })
+    }
+
+    function updatePassword() {
+        var model = {
+            password: $('#confirma-pass').val(),
+        }
+
+        if ($('#confirma-pass').val() == $('#pass').val()) {
+            AjaxHelper('PUT', '/Home/ChangePassword', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Senha alterada com sucesso!", "/Funcionario/Index")
+                }
+            })
+        }
+    }
+
+    function OnChangeValidation(campo) {
+        if ($(campo).val() != "") {
+            $(campo).css("border-color", "")
+        }
+    }
+
+</script>

@@ -263,7 +263,7 @@
         if (ValidateBeforeInsert()) {
             AjaxHelper('POST', '/Departamentos/InsertDepartamento', model, function (result) {
                 if (result) {
-                    configureSweetSuccess("Funcionario inserido com Sucesso", "/Departamentos/Index")
+                    configureSweetSuccess("Departamento inserido com Sucesso", "/Departamentos/Index")
                 }
                 else {
                     configureSweetError('error');
@@ -284,7 +284,7 @@
         if (ValidateBeforeUpdate()) {
             AjaxHelper('PUT', '/Departamentos/EditDepartamento', model, function (result) {
                 if (result) {
-                    configureSweetSuccess("Funcionario alterado com Sucesso", "/Departamentos/Index")
+                    configureSweetSuccess("Departamento alterado com Sucesso", "/Departamentos/Index")
                 }
                 else {
                     configureSweetError('error');
@@ -299,7 +299,7 @@
         };
         AjaxHelper('DELETE', '/Departamentos/DeleteDepartamento', model, function (result) {
             if (result) {
-                configureSweetSuccess("Funcionario deletado com sucesso!", "/Departamentos/Index")
+                configureSweetSuccess("Departamento deletado com sucesso!", "/Departamentos/Index")
             }
             else {
                 configureSweetError('error');

@@ -218,7 +218,7 @@
         if (ValidateBeforeUpdate()) {
             AjaxHelper('PUT', '/Cargo/UpdateCargo', model, function (result) {
                 if (result) {
-                    configureSweetSuccess("Férias alteradas com Sucesso", "/Cargo/Index")
+                    configureSweetSuccess("Cargo alterado com Sucesso", "/Cargo/Index")
                 }
                 else {
                     configureSweetError('error');
@@ -233,7 +233,7 @@
         };
         AjaxHelper('DELETE', '/Cargo/DeleteCargo', model, function (result) {
             if (result) {
-                configureSweetSuccess("Férias deletadas com sucesso!", "/Cargo/Index")
+                configureSweetSuccess("Cargo deletado com sucesso!", "/Cargo/Index")
             }
             else {
                 configureSweetError('error');

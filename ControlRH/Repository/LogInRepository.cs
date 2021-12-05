@@ -18,9 +18,8 @@ namespace ControlRH.Repository
         {
             Usuario model = new Usuario();
             var client = new HttpClient();
-            //client.BaseAddress = new Uri("http://www.rhcontrol-api.online/");
-            client.BaseAddress = new Uri("https://localhost:44303/");
-        
+            client.BaseAddress = new Uri("http://www.rhcontrol-api.online/");
+            //client.BaseAddress = new Uri("https://localhost:44303/");
 
             HttpResponseMessage res = await client.PostAsJsonAsync<Usuario>($"/LogIn/Auth", user);
             if (res.IsSuccessStatusCode)

@@ -48,6 +48,7 @@ function AjaxHelper(type, url, data, callback) {
             callback(result);
         },
         error: function (error) {
+            console.log(error)
             alert(error)
         }
     });

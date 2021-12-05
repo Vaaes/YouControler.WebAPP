@@ -53,6 +53,20 @@ namespace ControlRH.Repository
             return ferias;
         }
 
+        public async Task<IEnumerable<Usuario>> GetVerificaSenha(string token, int? Id)
+        {
+            IEnumerable<Usuario> usuario = new List<Usuario>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync($"/Usuario/GetVerificaSenha?Id={Id}");
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                usuario = JsonConvert.DeserializeObject<IEnumerable<Usuario>>(results);
+            }
+            return usuario;
+        }
+
         public bool Create(Usuario model, string token)
         {
             HttpClient client = _api.Initial(token);
@@ -98,6 +112,21 @@ namespace ControlRH.Repository
             HttpClient client = _api.Initial(token);
 
             var putTask = client.PutAsJsonAsync<Usuario>("Usuario", model);
+            putTask.Wait();
+
+            var result = putTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool UpdatePassword(Usuario model, string token)
+        {
+            HttpClient client = _api.Initial(token);
+
+            var putTask = client.PutAsJsonAsync<Usuario>($"Usuario/ChangePassword", model);
             putTask.Wait();
 
             var result = putTask.Result;
