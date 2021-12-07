@@ -33,6 +33,7 @@ namespace ControlRH.Controllers
             }
         }
 
+
         public async Task<IActionResult> ReturnAllMenusOnPartialView()
         {
             var model = new ControleAcessoViewModel();

@@ -196,7 +196,10 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#grid').DataTable();
+        $('#grid').DataTable({
+            "pageLength": 100
+        });
+
         $("#btn-filtra").hide();
         $("#btn-insert").hide();
         $(".btn-edit").hide();

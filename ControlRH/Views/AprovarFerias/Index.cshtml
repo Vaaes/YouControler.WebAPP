@@ -1,0 +1,118 @@
+﻿@model FeriasViewModel
+@{
+    ViewData["Title"] = "Aprovação de Férias";
+}
+
+
+<div>
+    <div>
+        <form asp-controller="AprovarFerias" asp-action="GetFerias" method="get">
+            <div class="card">
+                <div class="card-header">
+                    Filtros
+                </div>
+                <div class="card-body">
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Data Início</label>
+                            <input type="text" class="form-control placeholder" autocomplete="off" asp-for="Data_Inicio" maxlength="10">
+                        </div>
+
+                        <div class="col-md">
+                            <label>Data Final</label>
+                            <input type="text" class="form-control placeholder" autocomplete="off" asp-for="Data_Final" maxlength="10">
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
+                    <button type="button" id="btn-insert" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
+                </div>
+            </div>
+        </form>
+
+
+        <br />
+        <hr />
+        <br />
+
+        <div class="table-responsive">
+            <table id="grid" class="table table-striped table-bordered" style="width:100%">
+                <thead>
+                    <tr>
+                        <th>Colaborador</th>
+                        <th>Férias Inicio</th>
+                        <th>Férias Final</th>
+                        <th>Aprovação</th>
+                        <th class="nosort"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.Itens)
+                    {
+                        <tr>
+                            <td>@item.Nome</td>
+                            <td>@item.Data_Inicio</td>
+                            <td>@item.Data_Final</td>
+                            @if ((bool)@item.Aprovado)
+                            {
+                                <td>Aprovado</td>
+                            }
+                            else
+                            {
+                                <td>Ainda não Aprovado</td>
+                            }
+                            <td class="td-th-icon-size nosort text-center">
+                                @if (!(bool)@item.Aprovado)
+                                {
+                                    <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="Aprovacao(@item.Id, 1)" title="Aprovar férias"><i class="fa fa-check td-icon text-success"></i></a>
+                                    <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="Aprovacao(@item.Id, 0)" title="Não aprovar férias"><i class="fa fa-times td-icon text-danger"></i></a>
+
+                                }
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#grid').DataTable({
+            "pageLength": 100
+        });
+
+        $('.placeholder').mask("00/00/0000", { placeholder: "__/__/____" });
+
+        $("#btn-filtra").hide();
+        $(".btn-edit").hide();
+        $(".btn-excluir").hide();
+
+        HasPermission(8);
+    });
+
+    function Aprovacao(id, approved) {
+        var model = {
+            Id: id,
+            approved: approved,
+        };
+
+        AjaxHelper('PUT', '/AprovarFerias/AprovacaoFerias', model, function (result) {
+            if (result) {
+                if (approved == 1) {
+                    configureSweetSuccess("Férias aprovadas com Sucesso", "/AprovarFerias/Index")
+                }
+                else {
+                    configureSweetSuccess("Férias não aprovadas", "/AprovarFerias/Index")
+                }
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+</script>

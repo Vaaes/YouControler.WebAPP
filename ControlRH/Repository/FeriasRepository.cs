@@ -41,6 +41,20 @@ namespace ControlRH.Repository
             return ferias;
         }
 
+        public async Task<IEnumerable<Ferias>> GetAprovacao(string token, int Aprovado)
+        {
+            IEnumerable<Ferias> ferias = new List<Ferias>();
+            HttpClient client = _api.Initial(token);
+
+            HttpResponseMessage res = await client.GetAsync($"/Ferias/GetAprovacao?aprovado={Aprovado}");
+            if (res.IsSuccessStatusCode)
+            {
+                var results = res.Content.ReadAsStringAsync().Result;
+                ferias = JsonConvert.DeserializeObject<IEnumerable<Ferias>>(results);
+            }
+            return ferias;
+        }
+
         public bool Create(Ferias model, string token)
         {
             HttpClient client = _api.Initial(token);
@@ -71,6 +85,26 @@ namespace ControlRH.Repository
             HttpClient client = _api.Initial(token);
 
             var putTask = client.PutAsJsonAsync<Ferias>("Ferias", model);
+            putTask.Wait();
+
+            var result = putTask.Result;
+            if (result.IsSuccessStatusCode)
+            {
+                return true;
+            }
+            return false;
+        }
+
+        public bool AprovarFerias(string token, int id, int aprovado)
+        {
+            HttpClient client = _api.Initial(token);
+
+            var model = new Ferias();
+
+            model.IdUsuario = id;
+            model.Aprovacao = aprovado;
+
+            var putTask = client.PutAsJsonAsync<Ferias>($"Ferias/AprovarFerias", model);
             putTask.Wait();
 
             var result = putTask.Result;

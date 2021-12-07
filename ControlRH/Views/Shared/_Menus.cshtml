@@ -42,7 +42,7 @@
         {
             <li class="item">
                 <a asp-controller="Funcionario" asp-action="Index" class="menu-btn">
-                    <i class="fas fa-address-card"></i><span>Funcionario</span>
+                    <i class="fas fa-address-card"></i><span>@item.Menu</span>
                 </a>
             </li>
         }
@@ -74,6 +74,14 @@
             </li>
         }
 
+        if (item.Menu == "Aprovar Ferias")
+        {
+            <li class="item">
+                <a asp-controller="AprovarFerias" asp-action="Index" class="menu-btn">
+                    <i class="fas fa-umbrella-beach"></i><span>@item.Menu</span>
+                </a>
+            </li>
+        }
     }
 
     @*<li class="item" id="profile">

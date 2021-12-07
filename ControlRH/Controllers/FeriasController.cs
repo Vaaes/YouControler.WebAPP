@@ -3,6 +3,7 @@ using ControlRH.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace ControlRH.Controllers
@@ -41,6 +42,26 @@ namespace ControlRH.Controllers
                 model.Itens = await _feriasRepository.GetFeriasByParam(HttpContext.Session.GetString("SessionToken"), ferias.Data_Inicio, ferias.Data_Final, ferias.Id,  ferias.IdUsuario, ferias.Aprovado);
 
                 return View("Index", model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAprovacao(int aprovacao)
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("SessionName") == null)
+                    return RedirectToAction("LogOut", "Home");
+
+                var value = await _feriasRepository.GetAprovacao(HttpContext.Session.GetString("SessionToken"), aprovacao);
+
+                var teste = value.Count();
+
+                return Ok(value.Count());
             }
             catch (Exception ex)
             {

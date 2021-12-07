@@ -5,6 +5,15 @@
     ViewData["Title"] = "Home Page";
 }
 
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<div>
+    <canvas id="myChart"></canvas>
+</div>
+
+
+
 <div class="modal" id="modal-update-pass">
     <div class="modal-dialog modal-sm modal-dialog-centered">
         <div class="modal-content">
@@ -38,7 +47,61 @@
 
     $(document).ready(function () {
         VerifyIfItsDefaultPassword();
+        chartFerias();
     });
+
+
+    function chartFerias() {
+        var model = {
+            aprovacao: 1
+        }
+        AjaxHelper('GET', '/Ferias/GetAprovacao', model, function (AprovadoR) {
+            AjaxHelper('GET', '/Ferias/GetAprovacao', 0, function (ParaAprovarR) {
+                const labels = [
+                    'Férias',
+                ];
+
+                const data = {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Aprovado',
+                        backgroundColor: 'rgb(153, 255, 153)',
+                        borderColor: 'rgb(153, 255, 153)',
+                        data: [AprovadoR],
+                    },
+                    {
+                        label: 'Para aprovar',
+                        backgroundColor: 'rgb(255, 77, 77)',
+                        borderColor: 'rgb(255, 77, 77)',
+                        data: [ParaAprovarR],
+                    }
+                    ]
+                };
+
+                const config = {
+                    type: 'bar',
+                    data: data,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: true,
+                                text: 'Férias'
+                            }
+                        }
+                    },
+                };
+
+                const myChart = new Chart(
+                    document.getElementById('myChart'),
+                    config
+                );
+            })
+        }) 
+    }
 
     function VerifyIfItsDefaultPassword() {
         AjaxHelper('GET', '/Home/VerifyIfItsDefaultPassword', null, function (result) {

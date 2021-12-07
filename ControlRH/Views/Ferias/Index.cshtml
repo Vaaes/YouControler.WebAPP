@@ -42,7 +42,7 @@
                         <th>Colaborador</th>
                         <th>Férias Inicio</th>
                         <th>Férias Final</th>
-                        <th>Cargo</th>
+                        <th>Aprovação</th>
                         <th></th>
                     </tr>
                 </thead>
@@ -134,7 +134,9 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        $('#grid').DataTable();
+        $('#grid').DataTable({
+            "pageLength": 100
+        });
 
         $('.placeholder').mask("00/00/0000", { placeholder: "__/__/____" });
 
