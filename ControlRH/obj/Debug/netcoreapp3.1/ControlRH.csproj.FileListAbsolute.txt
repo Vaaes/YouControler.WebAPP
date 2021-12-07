@@ -414,3 +414,4 @@ C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Debug\netc
 C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Debug\netcoreapp3.1\Razor\Views\Funcionario\Index.cshtml.g.cs
 C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Debug\netcoreapp3.1\Razor\Views\Shared\_Mensagem.cshtml.g.cs
 C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Debug\netcoreapp3.1\Razor\Views\AprovarFerias\Index.cshtml.g.cs
+C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Debug\netcoreapp3.1\Razor\Views\Candidatos\Index.cshtml.g.cs
