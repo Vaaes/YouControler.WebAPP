@@ -4,165 +4,163 @@
 }
 
 
+
 <div>
-    <div>
-        <form asp-controller="Candidatos" asp-action="GetCandidato" method="get">
-            <div class="card">
-                <div class="card-header">
-                    Filtros
-                </div>
-                <div class="card-body">
-                    <div class="row g-2">
-                        <div class="col-md">
-                            <label>Nome</label>
-                            <input type="text" class="form-control" autocomplete="off" asp-for="NomeCandidato" maxlength="10">
-                        </div>
-                        <div class="col-md">
-                            <label>Email</label>
-                            <input type="text" class="form-control" autocomplete="off" asp-for="EmailCandidato" maxlength="10">
-                        </div>
-                        <div class="col-md">
-                            <label>Vaga</label>
-                            <input type="text" class="form-control" autocomplete="off" asp-for="IdVaga" maxlength="10">
-                        </div>
+    <form asp-controller="Candidatos" asp-action="GetCandidato" method="get">
+        <div class="card">
+            <div class="card-header">
+                Filtros
+            </div>
+            <div class="card-body">
+                <div class="row g-2">
+                    <div class="col-md">
+                        <label>Nome</label>
+                        <input type="text" class="form-control" autocomplete="off" asp-for="NomeCandidato" maxlength="50">
+                    </div>
+                    <div class="col-md">
+                        <label>Email</label>
+                        <input type="text" class="form-control" autocomplete="off" asp-for="EmailCandidato" maxlength="150">
                     </div>
                 </div>
-                <div class="card-footer">
-                    <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
-                    <button type="button" id="btn-insert" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
-                </div>
             </div>
-        </form>
+            <div class="card-footer">
+                <button type="submit" id="btn-filtra" class="btn btn-sm btn-primary float-right">Filtrar</button>
+                <button type="button" id="btn-insert" class="btn btn-sm btn-success float-right btn-margin">Incluir</button>
+            </div>
+        </div>
+    </form>
 
+    <br />
+    <hr />
+    <br />
 
-        <br />
-        <hr />
-        <br />
-
-        <div class="table-responsive">
-            <table id="grid" class="table table-striped table-bordered" style="width:100%">
-                <thead>
-                    <tr>
-                        <th>Nome</th>
-                        <th>Email</th>
-                        <th>Vaga</th>
-                        <th>Telefone</th>
-                        <th class="nosort"></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var item in Model.Itens)
-                    {
+    <div class="table-responsive">
+        <table id="grid" class="table table-striped table-bordered" style="width:100%">
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>Email</th>
+                    <th>Vaga</th>
+                    <th>Telefone</th>
+                    <th class="nosort"></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.Itens)
+                {
                     <tr>
                         <td>@item.NomeCandidato</td>
                         <td>@item.EmailCandidato</td>
-                        <td>@item.IdVaga</td>
+                        <td>@item.NomeVaga</td>
                         <td>@item.TelefoneCandidato</td>
                         <td class="td-th-icon-size nosort text-center">
-                            <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, '@item.NomeCandidato', '@item.IdadeCandidato', '@item.EmailCandidato', '@item.TelefoneCandidato', '@item.IdVaga')" title="Aprovar férias"><i class="fa fa-check td-icon text-success"></i></a>
-                            <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteCandidatoData(@item.Id)" title="Não aprovar férias"><i class="fa fa-times td-icon text-danger"></i></a>
+                            <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, '@item.NomeCandidato', '@item.IdadeCandidato', '@item.EmailCandidato', '@item.TelefoneCandidato', '@item.IdVaga')" title="Aprovar férias"><i class="fas fa-edit td-icon text-success"></i></a>
+                            <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteCandidatoData(@item.Id, '@item.NomeCandidato')" title="Não aprovar férias"><i class="fas fa-trash td-icon text-danger"></i></a>
                         </td>
                     </tr>
-                    }
-                </tbody>
-            </table>
-        </div>
+                }
+            </tbody>
+        </table>
+    </div>
 
-
-
-        <div class="modal" id="modal-insert">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Inserir</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <div class="row g-2">
-                            <div class="col-md">
-                                <label>Nome<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-insert" maxlength="10">
-                            </div>
-
-                            <div class="col-md">
-                                <label>Idade</label>
-                                <input type="text" class="form-control placeholder" autocomplete="off" id="idade-insert" maxlength="10">
-                            </div>
+    <div class="modal" id="modal-insert">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Inserir</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Nome<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-insert" maxlength="10">
                         </div>
-                        <div class="row g-2">
-                            <div class="col-md">
-                                <label>Telefone<span class="text-danger">*</span></label>
-                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="telefone-insert"></textarea>
-                            </div>
-                            <div class="col-md">
-                                <label>Vaga<span class="text-danger">*</span></label>
-                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="vaga-insert"></textarea>
-                            </div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-md">
-                                <label>Email<span class="text-danger">*</span></label>
-                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="email-insert"></textarea>
-                            </div>
+                        <div class="col-md">
+                            <label>Idade</label>
+                            <input type="text" class="form-control" autocomplete="off" id="idade-insert" maxlength="2">
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="InsertCandidatoData();">Salvar</button>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Telefone<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="telefone-insert">
+                        </div>
+                        <div class="col-md">
+                            <label>Vaga<span class="text-danger">*</span></label>
+                            <select class="form-control" id="vaga-insert">
+                                @foreach (var item in Model.ItensFerias)
+                                {
+                                    <option value="@item.Id">@item.NomeVaga</option>
+                                }
+                            </select>
+                        </div>
                     </div>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Email<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="email-insert">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="InsertCandidatoData();">Salvar</button>
                 </div>
             </div>
         </div>
+    </div>
 
-        <div class="modal" id="modal-update">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h4 class="modal-title">Alterar</h4>
-                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                    </div>
-                    <div class="modal-body">
-                        <input hidden id="id-update" />
-                        <div class="row g-2">
-                            <div class="col-md">
-                                <label>Nome<span class="text-danger">*</span></label>
-                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-update" maxlength="10">
-                            </div>
+    <div class="modal" id="modal-update">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Alterar</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <input hidden id="id-update" />
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Nome<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-update" maxlength="10">
+                        </div>
 
-                            <div class="col-md">
-                                <label>Idade</label>
-                                <input type="text" class="form-control placeholder" autocomplete="off" id="idade-update" maxlength="10">
-                            </div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-md">
-                                <label>Telefone<span class="text-danger">*</span></label>
-                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="telefone-update"></textarea>
-                            </div>
-                            <div class="col-md">
-                                <label>Vaga<span class="text-danger">*</span></label>
-                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="vaga-update"></textarea>
-                            </div>
-                        </div>
-                        <div class="row g-2">
-                            <div class="col-md">
-                                <label>Email<span class="text-danger">*</span></label>
-                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="email-update"></textarea>
-                            </div>
+                        <div class="col-md">
+                            <label>Idade</label>
+                            <input type="text" class="form-control" autocomplete="off" id="idade-update" maxlength="10">
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
-                        <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateCandidatoData();">Salvar</button>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Telefone<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="telefone-update" />
+                        </div>
+                        <div class="col-md">
+                            <label>Vaga<span class="text-danger">*</span></label>
+                            <select class="form-control" id="vaga-update" asp-for="IdVaga">
+                                @foreach (var item in Model.ItensFerias)
+                                {
+                                    <option value="@item.Id">@item.NomeVaga</option>
+                                }
+                            </select>
+                        </div>
                     </div>
+                    <div class="row g-2">
+                        <div class="col-md">
+                            <label>Email<span class="text-danger">*</span></label>
+                            <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="email-update" />
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                    <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateCandidatoData();">Salvar</button>
                 </div>
             </div>
         </div>
-
-
     </div>
 </div>
-
 
 <script type="text/javascript">
     $(document).ready(function () {
@@ -176,15 +174,19 @@
         $(".btn-edit").hide();
         $(".btn-excluir").hide();
 
-        HasPermission(10);
+        HasPermission(9);
+    });
+
+    $("#btn-insert").click(function () {
+        $('#modal-insert').modal('show');
     });
 
     function ValidateBeforeInsert() {
         var model = {
-            NomeCandidato: $('#nome-update'),
-            EmailCandidato: $('#email-update'),
-            TelefoneCandidato: $('#telefone-update'),
-            IdVaga: $('#vaga-update')
+            NomeCandidato: $('#nome-insert'),
+            EmailCandidato: $('#email-insert'),
+            TelefoneCandidato: $('#telefone-insert'),
+            IdVaga: $('#vaga-insert')
         }
 
         var valida = true
@@ -227,11 +229,11 @@
 
     function InsertCandidatoData() {
         var model = {
-            NomeCandidato: $('#nome-update'),
-            IdadeCandidato: $('#idade-update'),
-            EmailCandidato: $('#email-update'),
-            TelefoneCandidato: $('#telefone-update'),
-            IdVaga: $('#vaga-update')
+            NomeCandidato: $('#nome-insert').val(),
+            IdadeCandidato: $('#idade-insert').val(),
+            EmailCandidato: $('#email-insert').val(),
+            TelefoneCandidato: $('#telefone-insert').val(),
+            IdVaga: $('#vaga-insert').val()
         }
 
         if (ValidateBeforeInsert()) {
@@ -248,12 +250,12 @@
 
     function UpdateCandidatoData() {
         var model = {
-            Id: $('id-update'),
-            NomeCandidato: $('#nome-update'),
-            IdadeCandidato: $('#idade-update'),
-            EmailCandidato: $('#email-update'),
-            TelefoneCandidato: $('#telefone-update'),
-            IdVaga: $('#vaga-update')
+            Id: $('#id-update').val(),
+            NomeCandidato: $('#nome-update').val(),
+            IdadeCandidato: $('#idade-update').val(),
+            EmailCandidato: $('#email-update').val(),
+            TelefoneCandidato: $('#telefone-update').val(),
+            IdVaga: $('#vaga-update').val()
         }
 
         if (ValidateBeforeUpdate()) {
@@ -283,7 +285,7 @@
     }
 
 
-    function OpenCandidatoModal(Id, nome, idade, emaail, telefone, vaga) {
+    function OpenUpdateModal(Id, nome, idade, emaail, telefone, vaga) {
         $('#modal-update').modal('show');
         $("#id-update").val(Id);
         $("#nome-update").val(nome)
@@ -293,10 +295,11 @@
         $('#vaga-update').val(vaga);
     }
 
+
     function DeleteCandidatoData(id, nome) {
         Swal.fire({
             title: "Férias",
-            text: "Tem certeza que deseja remover a Vaga: " + nome + "?",
+            text: "Tem certeza que deseja remover o Candidato: " + nome + "?",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#28a745',
@@ -304,7 +307,7 @@
             confirmButtonText: 'Sim, deletar!'
         }).then((result) => {
             if (result.isConfirmed) {
-                DeleteVagasAjax(id)
+                DeleteCandidatoAjax(id)
             }
         })
     }

@@ -32,7 +32,7 @@ namespace ControlRH.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsuario(VagasViewModel usuario)
+        public async Task<IActionResult> GetVagas(VagasViewModel usuario)
         {
             try
             {
@@ -40,7 +40,7 @@ namespace ControlRH.Controllers
                 if (HttpContext.Session.GetString("SessionName") == null)
                     return RedirectToAction("LogOut", "Home");
 
-                model.Itens = await _vagasRepository.GetVagasByParam(HttpContext.Session.GetString("SessionToken"), usuario.Id, usuario.NomeVaga, usuario.DataMaxima, usuario.PerfilVaga);
+                model.Itens = await _vagasRepository.GetVagasByParam(HttpContext.Session.GetString("SessionToken"), usuario.NomeVaga);
 
                 return View("Index", model);
             }
@@ -51,7 +51,7 @@ namespace ControlRH.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUsuario(Vagas model)
+        public IActionResult CreateVagas(Vagas model)
         {
             try
             {
@@ -66,7 +66,25 @@ namespace ControlRH.Controllers
             }
         }
 
-        public IActionResult UpdateUsuario(Vagas model)
+        [HttpGet]
+        public async Task<IActionResult> GetVagasQuantidade()
+        {
+            try
+            {
+                if (HttpContext.Session.GetString("SessionName") == null)
+                    return RedirectToAction("LogOut", "Home");
+
+                var value = await _vagasRepository.Get(HttpContext.Session.GetString("SessionToken"));
+
+                return Ok(value.Count());
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public IActionResult UpdateVagas(Vagas model)
         {
             try
             {
@@ -82,7 +100,7 @@ namespace ControlRH.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteUsuario(int Id)
+        public async Task<IActionResult> DeleteVagas(int Id)
         {
             try
             {

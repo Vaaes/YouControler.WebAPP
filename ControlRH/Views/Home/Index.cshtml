@@ -12,6 +12,10 @@
     <canvas id="myChart"></canvas>
 </div>
 
+<div>
+    <canvas id="myChartVagas"></canvas>
+</div>
+
 
 
 <div class="modal" id="modal-update-pass">
@@ -48,6 +52,7 @@
     $(document).ready(function () {
         VerifyIfItsDefaultPassword();
         chartFerias();
+        chartVagas();
     });
 
 
@@ -100,7 +105,47 @@
                     config
                 );
             })
-        }) 
+        })
+    }
+
+    function chartVagas() {
+        AjaxHelper('GET', '/Vagas/GetVagasQuantidade', null, function (Vagas) {
+            const labels = [
+                'Vagas',
+            ];
+
+            const data = {
+                labels: labels,
+                datasets: [{
+                    label: 'Vagas',
+                    backgroundColor: 'rgb(153, 255, 153)',
+                    borderColor: 'rgb(153, 255, 153)',
+                    data: [Vagas],
+                }]
+            };
+
+            const config = {
+                type: 'bar',
+                data: data,
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        title: {
+                            display: true,
+                            text: 'Vagas'
+                        }
+                    }
+                },
+            };
+
+            const myChart = new Chart(
+                document.getElementById('myChartVagas'),
+                config
+            );
+        })
     }
 
     function VerifyIfItsDefaultPassword() {

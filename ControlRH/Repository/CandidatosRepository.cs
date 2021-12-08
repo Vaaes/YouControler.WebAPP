@@ -27,12 +27,12 @@ namespace ControlRH.Repository
             return model;
         }
 
-        public async Task<IEnumerable<Candidatos>> GetCandidatosByParam(string token, int? id = null, string NomeCandidato = null, int? IdadeCandidato = null, string EmailCandidato = null, string TelefoneCandidato = null, int? IdVaga = null)
+        public async Task<IEnumerable<Candidatos>> GetCandidatosByParam(string token, string NomeCandidato = null, string EmailCandidato = null)
         {
             IEnumerable<Candidatos> ferias = new List<Candidatos>();
             HttpClient client = _api.Initial(token);
 
-            HttpResponseMessage res = await client.GetAsync($"/Candidatos/GetCandidatosByParam?id={id}&NomeCandidato={NomeCandidato}&IdadeCandidato={IdadeCandidato}&EmailCandidato={EmailCandidato}&TelefoneCandidato={TelefoneCandidato}&IdVaga={IdVaga}");
+            HttpResponseMessage res = await client.GetAsync($"/Candidatos/GetCandidatosByParam?NomeCandidato={NomeCandidato}&EmailCandidato={EmailCandidato}");
             if (res.IsSuccessStatusCode)
             {
                 var results = res.Content.ReadAsStringAsync().Result;
@@ -45,7 +45,7 @@ namespace ControlRH.Repository
         {
             HttpClient client = _api.Initial(token);
 
-            var postTask = client.PostAsJsonAsync<Candidatos>("Vagas", model);
+            var postTask = client.PostAsJsonAsync<Candidatos>("Candidatos", model);
             postTask.Wait();
 
             var result = postTask.Result;

@@ -13,6 +13,7 @@ namespace ControlRH.Models
         public string EmailCandidato { get; set; }
         public string TelefoneCandidato { get; set; }
         public int IdVaga { get; set; }
+        public string NomeVaga { get; set; }
     }
 
     public class CandidatosViewModel
@@ -23,6 +24,8 @@ namespace ControlRH.Models
         public string EmailCandidato { get; set; }
         public string TelefoneCandidato { get; set; }
         public int IdVaga { get; set; }
+        public string NomeVaga { get; set; }
         public IEnumerable<Candidatos> Itens { get; set; }
+        public IEnumerable<Vagas> ItensFerias { get; set; }
     }
 }

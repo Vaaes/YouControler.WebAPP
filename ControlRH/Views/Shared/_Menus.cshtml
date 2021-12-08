@@ -82,6 +82,24 @@
                 </a>
             </li>
         }
+
+        if (item.Menu == "Candidatos")
+        {
+            <li class="item">
+                <a asp-controller="Candidatos" asp-action="Index" class="menu-btn">
+                    <i class="fas fa-users"></i><span>@item.Menu</span>
+                </a>
+            </li>
+        }
+
+        if (item.Menu == "Vagas")
+        {
+            <li class="item">
+                <a asp-controller="Vagas" asp-action="Index" class="menu-btn">
+                    <i class="far fa-bell"></i><span>@item.Menu</span>
+                </a>
+            </li>
+        }
     }
 
     @*<li class="item" id="profile">

@@ -12,7 +12,7 @@ namespace ControlRH.Controllers
     public class CandidatosController : Controller
     {
         CandidatosRepository _candidatosRepository = new CandidatosRepository();
-
+        VagasRepository _vagasRepository = new VagasRepository();
         public async Task<IActionResult> Index()
         {
             try
@@ -22,6 +22,7 @@ namespace ControlRH.Controllers
                     return RedirectToAction("LogOut", "Home");
 
                 model.Itens = await _candidatosRepository.Get(HttpContext.Session.GetString("SessionToken"));
+                model.ItensFerias = await _vagasRepository.Get(HttpContext.Session.GetString("SessionToken"));
 
                 return View(model);
             }
@@ -40,7 +41,8 @@ namespace ControlRH.Controllers
                 if (HttpContext.Session.GetString("SessionName") == null)
                     return RedirectToAction("LogOut", "Home");
 
-                model.Itens = await _candidatosRepository.GetCandidatosByParam(HttpContext.Session.GetString("SessionToken"), usuario.Id, usuario.NomeCandidato, usuario.IdadeCandidato, usuario.EmailCandidato, usuario.TelefoneCandidato, usuario.IdVaga);
+                model.Itens = await _candidatosRepository.GetCandidatosByParam(HttpContext.Session.GetString("SessionToken"), usuario.NomeCandidato, usuario.EmailCandidato);
+                model.ItensFerias = await _vagasRepository.Get(HttpContext.Session.GetString("SessionToken"));
 
                 return View("Index", model);
             }

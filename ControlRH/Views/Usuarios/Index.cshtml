@@ -333,14 +333,28 @@
         }
 
         if (ValidateBeforeInsert()) {
-            AjaxHelper('POST', '/Usuarios/CreateUsuario', model, function (result) {
-                if (result) {
+            //AjaxHelper('POST', '/Usuarios/CreateUsuario', model, function (result) {
+            //    if (result) {
+            //        configureSweetSuccess("Usuário inserido com Sucesso", "/Usuarios/Index")
+            //    }
+            //    else {
+            //        configureSweetError('error');
+            //    }
+            //})
+
+            $.ajax({
+                type: 'POST',
+                url: '/Usuarios/CreateUsuario',
+                data: model,
+                success: function (result) {
                     configureSweetSuccess("Usuário inserido com Sucesso", "/Usuarios/Index")
+                    console.log(result);
+                },
+                error: function (error) {
+                    console.log(error)
+                    configureSweetError('error: ' + error);
                 }
-                else {
-                    configureSweetError('error');
-                }
-            })
+            });
         }
     }
 

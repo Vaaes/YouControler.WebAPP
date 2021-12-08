@@ -1,6 +1,7 @@
 ﻿using ControlRH.Helper;
 using ControlRH.Models;
 using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -69,17 +70,25 @@ namespace ControlRH.Repository
 
         public bool Create(Usuario model, string token)
         {
-            HttpClient client = _api.Initial(token);
-
-            var postTask = client.PostAsJsonAsync<Usuario>("Usuario", model);
-            postTask.Wait();
-
-            var result = postTask.Result;
-            if (result.IsSuccessStatusCode)
+            try
             {
-                return true;
+                HttpClient client = _api.Initial(token);
+
+                var postTask = client.PostAsJsonAsync<Usuario>("Usuario", model);
+                postTask.Wait();
+
+                var result = postTask.Result;
+                
+                if (result.IsSuccessStatusCode)
+                {
+                    return true;
+                }
+                return false;
             }
-            return false;
+            catch(Exception ex)
+            {
+                throw ex;
+            }
         }
 
         public async Task<bool> Delete(int id, string token)

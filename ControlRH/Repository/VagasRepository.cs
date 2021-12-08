@@ -25,12 +25,12 @@ namespace ControlRH.Repository
             return model;
         }
 
-        public async Task<IEnumerable<Vagas>> GetVagasByParam(string token, int? id = null, string NomeVaga = null, string DataMaxima = null, string PerfilVaga = null)
+        public async Task<IEnumerable<Vagas>> GetVagasByParam(string token, string NomeVaga = null)
         {
             IEnumerable<Vagas> ferias = new List<Vagas>();
             HttpClient client = _api.Initial(token);
 
-            HttpResponseMessage res = await client.GetAsync($"/Vagas/GetVagasByParam?id={id}&NomeVaga={NomeVaga}&DataMaxima={DataMaxima}&PerfilVaga={PerfilVaga}");
+            HttpResponseMessage res = await client.GetAsync($"/Vagas/GetVagasByParam?NomeVaga={NomeVaga}");
             if (res.IsSuccessStatusCode)
             {
                 var results = res.Content.ReadAsStringAsync().Result;

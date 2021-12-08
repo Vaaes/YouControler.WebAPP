@@ -250,3 +250,6 @@ C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Release\ne
 C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Release\netcoreapp3.1\ControlRH.dll
 C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Release\netcoreapp3.1\ControlRH.pdb
 C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Release\netcoreapp3.1\ControlRH.genruntimeconfig.cache
+C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Release\netcoreapp3.1\Razor\Views\AprovarFerias\Index.cshtml.g.cs
+C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Release\netcoreapp3.1\Razor\Views\Candidatos\Index.cshtml.g.cs
+C:\Users\Cliente\source\repos\TCC\Aplicação\ControlRH\ControlRH\obj\Release\netcoreapp3.1\Razor\Views\Vagas\Index.cshtml.g.cs
