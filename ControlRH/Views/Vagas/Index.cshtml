@@ -1,12 +1,12 @@
 ﻿@model VagasViewModel
 @{
-    ViewData["Title"] = "Aprovação de Férias";
+    ViewData["Title"] = "Vagas";
 }
 
 
 <div>
     <div>
-        <form asp-controller="AprovarFerias" asp-action="GetFerias" method="get">
+        <form asp-controller="Vagas" asp-action="GetVagas" method="get">
             <div class="card">
                 <div class="card-header">
                     Filtros
@@ -49,14 +49,87 @@
                             <td>@item.DataMaxima</td>
                             <td>@item.PerfilVaga</td>
                             <td class="td-th-icon-size nosort text-center">
-                                <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, 1)" title="Aprovar férias"><i class="fa fa-check td-icon text-success"></i></a>
-                                <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteFeriasData(@item.Id, 0)" title="Não aprovar férias"><i class="fa fa-times td-icon text-danger"></i></a>
+                                <a class="btn-edit" data-toggle="tooltip" data-placement="top" onclick="OpenUpdateModal(@item.Id, '@item.NomeVaga', '@item.DataMaxima', '@item.PerfilVaga')" title="Aprovar férias"><i class="fa fa-check td-icon text-success"></i></a>
+                                <a class="btn-excluir" data-toggle="tooltip" data-placement="top" onclick="DeleteVagasData(@item.Id)" title="Não aprovar férias"><i class="fa fa-times td-icon text-danger"></i></a>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
         </div>
+
+
+
+        <div class="modal" id="modal-insert">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Inserir</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Vaga<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-vaga-insert" maxlength="10">
+                            </div>
+
+                            <div class="col-md">
+                                <label>Data Maxima</label>
+                                <input type="text" class="form-control placeholder" autocomplete="off" id="data-maxima-insert" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Vaga<span class="text-danger">*</span></label>
+                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="perfil-descricao-insert"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" id="btn-inserir-cancelar" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-salvar-perfil" onclick="InsertVagasData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal" id="modal-update">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title">Alterar</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <input hidden id="id-update" />
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Vaga<span class="text-danger">*</span></label>
+                                <input type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="nome-vaga-update" maxlength="10">
+                            </div>
+
+                            <div class="col-md">
+                                <label>Data Maxima</label>
+                                <input type="text" class="form-control placeholder" autocomplete="off" id="data-maxima-update" maxlength="10">
+                            </div>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-md">
+                                <label>Vaga<span class="text-danger">*</span></label>
+                                <textarea type="text" class="form-control" onchange="OnChangeValidation(this)" autocomplete="off" id="perfil-descricao-update"></textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-success" id="btn-editar-perfil" onclick="UpdateVagasData();">Salvar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
     </div>
 </div>
 
@@ -75,4 +148,124 @@
 
         HasPermission(10);
     });
+
+    function ValidateBeforeInsert() {
+        var model = {
+            NomeVaga: $('#nome-vaga-insert'),
+            PerfilVaga: $('#perfil-descricao-insert')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+    function ValidateBeforeUpdate() {
+        var model = {
+            NomeVaga: $('#nome-vaga-update'),
+            PerfilVaga: $('#perfil-descricao-update')
+        }
+
+        var valida = true
+
+        $.each(model, function (i, item) {
+            if (item.val() == "") {
+                item.css("border-color", "red")
+                valida = false
+            }
+        })
+
+        return valida;
+    }
+
+    function OnChangeValidation(campo) {
+        if ($(campo).val() != "") {
+            $(campo).css("border-color", "")
+        }
+    }
+
+    function InsertVagasData() {
+        var model = {
+            NomeVaga: $('#nome-vaga-update'),
+            DataMaxima: $('#data-maxima-update'),
+            PerfilVaga: $('#perfil-descricao-update')
+        }
+
+        if (ValidateBeforeInsert()) {
+            AjaxHelper('POST', '/Vagas/CreateUsuario', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Vaga inserida com Sucesso", "/Vagas/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
+    }
+
+    function UpdateVagasData() {
+        var model = {
+            Id: $('id-update'),
+            NomeVaga: $('#nome-vaga-update'),
+            DataMaxima: $('#data-maxima-update'),
+            PerfilVaga: $('#perfil-descricao-update')
+        }
+
+        if (ValidateBeforeUpdate()) {
+            AjaxHelper('PUT', '/Vagas/UpdateUsuario', model, function (result) {
+                if (result) {
+                    configureSweetSuccess("Vaga alterada com Sucesso", "/Vagas/Index")
+                }
+                else {
+                    configureSweetError('error');
+                }
+            })
+        }
+    }
+
+    function DeleteVagasAjax(id) {
+        var model = {
+            Id: id,
+        };
+        AjaxHelper('DELETE', '/Vagas/DeleteUsuario', model, function (result) {
+            if (result) {
+                configureSweetSuccess("Vaga deletada com sucesso!", "/Vagas/Index")
+            }
+            else {
+                configureSweetError('error');
+            }
+        })
+    }
+
+
+    function OpenUpdateModal(Id, NomeVaga, DataMaxima, Perfil) {
+        $('#modal-update').modal('show');
+        $("#id-update").val(Id);
+        $("#nome-vaga-update").val(NomeVaga)
+        $('#data-maxima-update').val(DataMaxima);
+        $('#perfil-descricao-update').val(Perfil);
+    }
+
+    function DeleteVagasData(id, NomeVaga) {
+        Swal.fire({
+            title: "Férias",
+            text: "Tem certeza que deseja remover a Vaga: " + NomeVaga + "?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#28a745',
+            cancelButtonColor: '#dc3545',
+            confirmButtonText: 'Sim, deletar!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                DeleteVagasAjax(id)
+            }
+        })
+    }
 </script>

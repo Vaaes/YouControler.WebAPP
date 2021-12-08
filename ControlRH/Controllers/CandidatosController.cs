@@ -32,7 +32,7 @@ namespace ControlRH.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsuario(CandidatosViewModel usuario)
+        public async Task<IActionResult> GetCandidato(CandidatosViewModel usuario)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace ControlRH.Controllers
         }
 
         [HttpPost]
-        public IActionResult CreateUsuario(Candidatos model)
+        public IActionResult CreateCandidato(Candidatos model)
         {
             try
             {
@@ -66,7 +66,7 @@ namespace ControlRH.Controllers
             }
         }
 
-        public IActionResult UpdateUsuario(Candidatos model)
+        public IActionResult UpdateCandidato(Candidatos model)
         {
             try
             {
@@ -82,7 +82,7 @@ namespace ControlRH.Controllers
         }
 
         [HttpDelete]
-        public async Task<IActionResult> DeleteUsuario(int Id)
+        public async Task<IActionResult> DeleteCandidato(int Id)
         {
             try
             {
